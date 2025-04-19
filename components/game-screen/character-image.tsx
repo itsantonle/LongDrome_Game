@@ -1,0 +1,40 @@
+import React from 'react'
+import Image from 'next/image'
+import { GAME_CONFIG } from '@/app/page'
+// Assuming it's imported here
+
+interface CharacterImageProps {
+  hp: number
+  maxHp: number
+}
+
+function CharacterImage(props: CharacterImageProps) {
+  const { hp, maxHp } = props
+  const healthRatio = hp / maxHp
+
+  // Determine character image based on health thresholds
+  let imageSrc = '/placeholder.svg?text=HealthyHero&width=64&height=96'
+  let imageClass = ''
+
+  if (healthRatio <= GAME_CONFIG.HEALTH_THRESHOLDS.CRITICAL) {
+    imageSrc = '/placeholder.svg?text=DefeatedHero&width=64&height=96'
+    imageClass = 'opacity-60 filter grayscale'
+  } else if (healthRatio <= GAME_CONFIG.HEALTH_THRESHOLDS.WEAKENED) {
+    imageSrc = '/placeholder.svg?text=WeakenedHero&width=64&height=96'
+    imageClass = 'opacity-80'
+  }
+
+  return (
+    <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+      <Image
+        src={imageSrc}
+        alt="Character"
+        width={64}
+        height={96}
+        className={`object-contain ${imageClass}`}
+      />
+    </div>
+  )
+}
+
+export default CharacterImage
