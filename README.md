@@ -1,8 +1,8 @@
 # About LongDrome
+ Version 1.0
+### Face Upon an Enemy that Cannot Be Killed! You can only Defend yourself and Negotiate!
 
-## Face Upon an Enemy that Cannot Be Killed! You can only Defend yourself and Negotiate!
 
-### Version 1.0
 
 This project runs on NextJS and is a browser based game that relies on ShadCN and TailwindCSS. You're facing against an immortal entity that cannot be killed, it has secrets and you need to understand them. Go through color blocks and defend yourself against a foe who can hit YOU, but you CANNOT hit it. A turn based combat that focuses on 'talking' and pattern identification. Can you prove how good you are at the patterns?
 
