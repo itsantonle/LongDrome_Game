@@ -16,41 +16,43 @@
  * - To change dialog navigation: Edit the handleNext function
  */
 
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useState, useEffect } from "react"
-import { cva, type VariantProps } from "class-variance-authority"
-import { X, ChevronRight } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from 'react'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { X, ChevronRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 const dialogVariants = cva(
-  "fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity",
+  'fixed inset-0 z-50 flex items-center justify-center p-4 backdrop-blur-sm transition-opacity',
   {
     variants: {
       position: {
-        center: "items-center",
-        top: "items-start pt-16",
-        bottom: "items-end pb-16",
+        center: 'items-center',
+        top: 'items-start pt-16',
+        bottom: 'items-end pb-16',
       },
       size: {
-        sm: "max-w-sm",
-        md: "max-w-md",
-        lg: "max-w-lg",
-        xl: "max-w-xl",
-        full: "max-w-full",
+        sm: 'max-w-sm',
+        md: 'max-w-md',
+        lg: 'max-w-lg',
+        xl: 'max-w-xl',
+        full: 'max-w-full',
       },
     },
     defaultVariants: {
-      position: "center",
-      size: "md",
+      position: 'center',
+      size: 'md',
     },
-  },
+  }
 )
 
-export interface GameDialogProps extends React.HTMLAttributes<HTMLDivElement>, VariantProps<typeof dialogVariants> {
+export interface GameDialogProps
+  extends React.HTMLAttributes<HTMLDivElement>,
+    VariantProps<typeof dialogVariants> {
   isOpen: boolean
   onClose: () => void
   title?: string
@@ -60,6 +62,7 @@ export interface GameDialogProps extends React.HTMLAttributes<HTMLDivElement>, V
   typeSpeed?: number
   hasNextButton?: boolean
   onComplete?: () => void
+  showCursor?: boolean
 }
 
 export function GameDialog({
@@ -72,6 +75,7 @@ export function GameDialog({
   typeSpeed = 30,
   hasNextButton = true,
   onComplete,
+  showCursor = false,
   className,
   position,
   size,
@@ -79,7 +83,7 @@ export function GameDialog({
 }: GameDialogProps) {
   const [visible, setVisible] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
-  const [displayedText, setDisplayedText] = useState("")
+  const [displayedText, setDisplayedText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
 
   const contentArray = Array.isArray(content) ? content : [content]
@@ -94,7 +98,7 @@ export function GameDialog({
       if (!visible) {
         setCurrentPage(0)
         if (autoType) {
-          setDisplayedText("")
+          setDisplayedText('')
           setIsTyping(true)
         } else {
           setDisplayedText(contentArray[0])
@@ -111,11 +115,13 @@ export function GameDialog({
 
     let currentIndex = 0
     const maxLength = currentContent.length
-    setDisplayedText("")
+    setDisplayedText('')
 
     const typingInterval = setInterval(() => {
       if (currentIndex < maxLength) {
-        setDisplayedText((prev) => prev + currentContent.charAt(currentIndex))
+        // Create a new string instead of appending to prevent text transformation issues
+        const newText = currentContent.substring(0, currentIndex + 1)
+        setDisplayedText(newText)
         currentIndex++
       } else {
         clearInterval(typingInterval)
@@ -131,7 +137,7 @@ export function GameDialog({
     // Only reset typing when the page actually changes
     if (visible) {
       if (autoType) {
-        setDisplayedText("")
+        setDisplayedText('')
         setIsTyping(true)
       } else {
         setDisplayedText(currentContent)
@@ -161,22 +167,33 @@ export function GameDialog({
   if (!visible) return null
 
   return (
-    <div className={cn("fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4", className)} {...props}>
+    <div
+      className={cn(
+        'fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4',
+        className
+      )}
+      {...props}
+    >
       <div
         className={cn(
-          "w-full max-w-lg rounded-lg border-2 border-primary/30 bg-background p-0 shadow-lg",
-          size === "sm" && "max-w-sm",
-          size === "md" && "max-w-md",
-          size === "lg" && "max-w-lg",
-          size === "xl" && "max-w-xl",
-          size === "full" && "max-w-full",
+          'w-full max-w-lg rounded-lg border-2 border-primary/30 bg-background p-0 shadow-lg',
+          size === 'sm' && 'max-w-sm',
+          size === 'md' && 'max-w-md',
+          size === 'lg' && 'max-w-lg',
+          size === 'xl' && 'max-w-xl',
+          size === 'full' && 'max-w-full'
         )}
       >
         {/* Dialog Header */}
         {title && (
           <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2">
             <h3 className="font-semibold">{title}</h3>
-            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={onClose}
+            >
               <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </Button>
@@ -188,7 +205,7 @@ export function GameDialog({
           {portrait && (
             <div className="mr-4 h-20 w-20 shrink-0 overflow-hidden rounded-md border">
               <img
-                src={portrait || "/placeholder.svg"}
+                src={portrait || '/placeholder.svg'}
                 alt="Character portrait"
                 className="h-full w-full object-cover"
               />
@@ -197,8 +214,12 @@ export function GameDialog({
 
           {/* Dialog Content */}
           <div className="flex-1 font-medium">
-            {displayedText}
-            {isTyping && <span className="animate-pulse">▌</span>}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: displayedText.replace(/\n/g, '<br>'),
+              }}
+            />
+            {isTyping && showCursor && <span className="animate-pulse">▌</span>}
           </div>
         </div>
 
@@ -211,8 +232,10 @@ export function GameDialog({
                 <div
                   key={index}
                   className={cn(
-                    "h-1.5 w-1.5 rounded-full",
-                    index === currentPage ? "bg-primary" : "bg-muted-foreground/30",
+                    'h-1.5 w-1.5 rounded-full',
+                    index === currentPage
+                      ? 'bg-primary'
+                      : 'bg-muted-foreground/30'
                   )}
                 />
               ))}
@@ -227,8 +250,13 @@ export function GameDialog({
 
             {/* Next button (only shown when not on last page) */}
             {!isLastPage && hasNextButton && (
-              <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={handleNext}>
-                {isTyping ? "Skip" : "Next"}
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+                onClick={handleNext}
+              >
+                {isTyping ? 'Skip' : 'Next'}
                 {!isTyping && <ChevronRight className="h-4 w-4" />}
               </Button>
             )}
@@ -238,4 +266,3 @@ export function GameDialog({
     </div>
   )
 }
-

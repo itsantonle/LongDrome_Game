@@ -4,7 +4,6 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 
 import { ThemeProvider } from '@/components/nav/theme-provider'
-import { Footer } from '@/components/nav/footer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -31,7 +30,6 @@ export default function RootLayout({
             {/* Navigation Header */}
             <MainHeader />
             <main className="flex-1">{children}</main>
-            <Footer />
           </div>
         </ThemeProvider>
       </body>

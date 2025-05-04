@@ -19,9 +19,20 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ChevronRight } from 'lucide-react'
+import {
+  ArrowBigDownIcon,
+  ChevronRight,
+  HomeIcon,
+  MessageSquare,
+} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { ColorBlock } from '@/components/game-mechanics/color-block'
+import Image from 'next/image'
+import SelectedSequence from '../game-screen/selection-area/selected-sequence'
+import { COLORS } from '@/lib/palindrome-utils'
+import ActionsButtons from '../game-screen/side-button-area/action-buttons'
+import PlayerHPMP from '../game-screen/game-control-area/player-hp-mp'
+import { cn } from '@/lib/utils'
 
 interface TutorialTransitionProps {
   onComplete: () => void
@@ -31,13 +42,37 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
   const [currentStep, setCurrentStep] = useState(0)
   const [isAnimating, setIsAnimating] = useState(false)
 
+  interface TutorialStepsProps {
+    title: string
+    content: string
+    example: string[] | null
+    portrait?: string[] | null
+    componenent?: React.ReactNode
+  }
+
   // Tutorial steps with content and examples
-  const tutorialSteps = [
+  const tutorialSteps: TutorialStepsProps[] = [
     {
-      title: 'Welcome to Palindrome Guardian',
+      title: 'You have arrived at LongDrome!',
       content:
-        "In this game, you'll face an Ancient Guardian who can only be defeated through the power of palindromes.",
+        "In this game, you'll face an invincible entity, the Ancient Guardian, invincible to attacks and understanding to reason. The guardian may be friendly or hostile depending on your responses.",
       example: null,
+      portrait: [
+        '/ldrome_guardian.jpg',
+        '/ldrome_guardian_friendly.jpg',
+        '/ldrome_guardian_hostile.jpg',
+      ],
+    },
+    {
+      title: 'The Character? ',
+      content:
+        "A naive young fellow who seeks to learn the way of the patterns.  Your choice throughout the game affects the character's temperament",
+      example: null,
+      portrait: [
+        '/ldrome_char.jpg',
+        '/ldrome_char_weak.jpg',
+        '/ldrome_char_critical.jpg',
+      ],
     },
     {
       title: 'What is a Palindrome?',
@@ -49,43 +84,225 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
       title: 'Game Mechanics',
       content:
         'Each turn, you must identify and select a palindromic sequence of colors to defend yourself.',
-      example: ['green', 'yellow', 'purple', 'yellow', 'green'],
+      example: ['yellow', 'purple', 'yellow'],
+      componenent: (
+        <>
+          <SelectedSequence
+            selectedIndices={[1, 2, 3]}
+            currentColorSequence={[
+              'green',
+              'yellow',
+              'purple',
+              'yellow',
+              'green',
+            ]}
+            COLORS={COLORS}
+            isPalindrome={() => {
+              return true
+            }}
+            getSelectedColors={() => {
+              return ['yellow', 'purple', 'yellow']
+            }}
+          />
+          <p className="mr-3"></p>
+          <SelectedSequence
+            selectedIndices={[1, 2]}
+            currentColorSequence={[
+              'green',
+              'yellow',
+              'purple',
+              'yellow',
+              'green',
+            ]}
+            COLORS={COLORS}
+            isPalindrome={() => {
+              return false
+            }}
+            getSelectedColors={() => {
+              return ['yellow', 'purple']
+            }}
+          />
+        </>
+      ),
     },
     {
-      title: 'Finding Palindromes',
+      title: 'Action Buttons',
       content:
-        'Click on colors to select them. Your goal is to find the longest palindrome in the sequence.',
-      example: ['black', 'orange', 'white', 'orange', 'black'],
+        'You can click on the actions buttons to do something. They can change based on your current location and perform different things such as heal hp, mp, start the turn or talk to the guardian.',
+      example: null,
+      componenent: (
+        <>
+          <div className="mr-5">
+            <ActionsButtons
+              handleRest={() => {
+                console.log('rest')
+              }}
+              handleMagic={() => {
+                console.log('magic')
+              }}
+              handleRead={() => {
+                console.log('read')
+              }}
+              handleTalk={() => {
+                console.log('talk')
+              }}
+              startTurn={() => {
+                console.log('start turn')
+              }}
+              stats={{ mp: 50 }}
+              gameState="idle"
+              areButtonsDisabled={() => {
+                return false
+              }}
+              gameText="Text"
+              hasRestedThisTurn={false}
+              hasTalkedThisRound={false}
+            />
+          </div>
+
+          <ActionsButtons
+            handleRest={() => {
+              console.log('rest')
+            }}
+            handleMagic={() => {
+              console.log('magic')
+            }}
+            handleRead={() => {
+              console.log('read')
+            }}
+            handleTalk={() => {
+              console.log('talk')
+            }}
+            startTurn={() => {
+              console.log('start turn')
+            }}
+            stats={{ mp: 50 }}
+            gameState="home"
+            areButtonsDisabled={() => {
+              return false
+            }}
+            gameText="Text"
+            hasRestedThisTurn={false}
+            hasTalkedThisRound={false}
+          />
+        </>
+      ),
     },
     {
-      title: "The Guardian's Challenge",
+      title: 'Losing HP and MP',
       content:
-        "The Guardian will always find the longest palindrome. If yours is shorter, you'll take damage!",
-      example: ['blue', 'red', 'green', 'red', 'blue', 'yellow'],
+        "The Guardian will always find the longest palindrome. If yours is shorter, you'll take damage! If you're stuck: You can use the Magic Action button but it takes 20 MP! If your health drops to 0, you have one last chance before you truly lose!",
+      example: null,
+      componenent: (
+        <div className="flex flex-col gap-4 items-center">
+          <div className="mb-2">
+            <PlayerHPMP maxHp={100} hp={100} maxMp={50} mp={50} />
+          </div>
+          <ArrowBigDownIcon className="text-center" />{' '}
+          <span className="text-sm text-muted-foreground">
+            {' '}
+            Taking damage or using the Magic Action Button
+          </span>
+          <div>
+            <PlayerHPMP maxHp={100} hp={50} maxMp={50} mp={30} />
+          </div>
+        </div>
+      ),
     },
-    {
-      title: 'Using Magic',
-      content:
-        "If you're stuck, you can use magic (costs 20 MP) to reveal the longest palindrome.",
-      example: ['purple', 'orange', 'yellow', 'orange', 'purple'],
-    },
+
     {
       title: 'Talking to the Guardian',
       content:
         'Between turns, you can talk to the Guardian. Being friendly may restore your HP and MP!',
       example: null,
-    },
-    {
-      title: 'Winning the Game',
-      content:
-        "Survive 10 rounds and maintain a good relationship with the Guardian to win. If your relationship is poor, you'll face a final challenge!",
-      example: null,
+      componenent: (
+        <>
+          <Button
+            variant="outline"
+            size="lg"
+            className={`flex h-16 w-16 flex-col items-center justify-center gap-1 border-2 
+            border-green-500 animate-pulse p-0 md:h-20 md:w-20`}
+          >
+            <MessageSquare className="h-6 w-6 text-green-500" />
+            <span className="text-xs">Talk</span>
+          </Button>
+        </>
+      ),
     },
     {
       title: 'Going Home',
       content:
-        "Once you've earned the Guardian's trust, you can return home to rest, read books about palindromes, and recover your strength.",
+        "Once you've earned the Guardian's trust, you can return home to rest, read books about palindromes, and recover your strength! You can try to raise the guardian's amiability by choosing correct  responses!",
       example: null,
+      componenent: (
+        <>
+          <div className="flex flex-col gap-4 items-center">
+            <p className="text-muted-foreground text-xs"> Response options</p>
+            <div className="grid grid-cols-1 gap-2">
+              {[
+                {
+                  text: 'This is a somewhat positive option',
+                  type: 'positive',
+                },
+                {
+                  text: 'This is a somewhat negative option',
+                  type: 'negative',
+                },
+              ].map((option, index) => (
+                <Button
+                  key={index}
+                  onClick={() => {
+                    console.log('clicked option')
+                  }}
+                  variant={
+                    option.type === 'positive'
+                      ? 'default'
+                      : option.type === 'negative'
+                      ? 'outline'
+                      : 'secondary'
+                  }
+                  className={cn(
+                    'justify-start text-left',
+                    option.type === 'positive' &&
+                      'border-l-4 border-l-green-500',
+                    option.type === 'negative' && 'border-l-4 border-l-red-500'
+                  )}
+                >
+                  {/* Pass the exact text without any transformation */}
+                  {option.text}
+                </Button>
+              ))}
+            </div>
+            <ArrowBigDownIcon />
+            <p className="text-muted-foreground text-xs">
+              {' '}
+              Improve Amiability to be able to Go Home
+            </p>
+            <Button
+              variant="default"
+              size="sm"
+              className={`flex items-center gap-1 rounded-t-md rounded-b-none border-b-0 px-4 py-2 
+            border-2 border-primary pulse-border`}
+            >
+              <HomeIcon className="h-4 w-4" />
+              <span>Home</span>
+            </Button>
+          </div>
+        </>
+      ),
+    },
+    {
+      title: 'Winning the Game',
+      content:
+        "Survive 6 rounds and maintain a good relationship with the Guardian to win. If your relationship is poor, you'll face a final challenge!",
+      example: null,
+      componenent: (
+        <div className="border-t-2 border-primary/30 bg-muted/80 p-4">
+          <p className="font-mono text-sm leading-relaxed">
+            {'Round 6 Complete!'}
+          </p>
+        </div>
+      ),
     },
   ]
 
@@ -163,7 +380,44 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
             </div>
           </div>
         )}
+        {/* Portrait  */}
+        {currentTutorial.portrait && (
+          <div className="mb-6">
+            <div className="text-center text-sm text-muted-foreground mb-2">
+              Portraits
+            </div>
+            <div className="flex justify-center">
+              {currentTutorial.portrait.map((link) => {
+                return (
+                  <Image
+                    key={link}
+                    src={link}
+                    alt="portrait"
+                    width={100}
+                    height={100}
+                    className="mr-2 rounded-sm"
+                  />
+                )
+              })}
+            </div>
+            <div className="mt-2 text-center text-sm text-muted-foreground">
+              {/* {currentTutorial.example.join(' - ')} */}
+            </div>
+          </div>
+        )}
 
+        {/* Component */}
+        {currentTutorial.componenent && (
+          <div className="mb-6">
+            <div className="flex justify-center">
+              {currentTutorial.componenent}
+              {/* <ColorBlock colors={currentTutorial.example} size="md" /> */}
+            </div>
+            <div className="mt-2 text-center text-sm text-muted-foreground">
+              {/* {currentTutorial.example.join(' - ')} */}
+            </div>
+          </div>
+        )}
         <div className="flex justify-center">
           <Button
             onClick={goToNextStep}

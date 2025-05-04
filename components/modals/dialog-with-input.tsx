@@ -19,12 +19,12 @@
  * - To add images: Add an image prop and render it in the component
  */
 
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { X, ChevronRight } from "lucide-react"
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { useState, useEffect } from 'react'
+import { X, ChevronRight } from 'lucide-react'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
 
 export interface DialogWithInputProps {
   isOpen: boolean
@@ -39,9 +39,10 @@ export interface DialogWithInputProps {
   // New prop for predefined response options
   responseOptions?: Array<{
     text: string
-    type: "positive" | "negative" | "neutral"
+    type: 'positive' | 'negative' | 'neutral'
   }>
   placeholder?: string
+  showCursor?: boolean
 }
 
 export function DialogWithInput({
@@ -56,16 +57,23 @@ export function DialogWithInput({
   turnCount = 0,
   // Default response options if none provided
   responseOptions = [
-    { text: "I seek to understand the balance of these patterns.", type: "positive" },
-    { text: "I need to learn more about this symmetry.", type: "positive" },
-    { text: "I demand to know the power behind these colors!", type: "negative" },
-    { text: "I'll take whatever knowledge I can get.", type: "negative" },
+    {
+      text: 'I seek to understand the balance of these patterns.',
+      type: 'positive',
+    },
+    { text: 'I need to learn more about this symmetry.', type: 'positive' },
+    {
+      text: 'I demand to know the power behind these colors!',
+      type: 'negative',
+    },
+    { text: "I'll take whatever knowledge I can get.", type: 'negative' },
   ],
-  placeholder = "What will you say...",
+  placeholder = 'What will you say...',
+  showCursor = false,
 }: DialogWithInputProps) {
   const [visible, setVisible] = useState(false)
   const [currentPage, setCurrentPage] = useState(0)
-  const [displayedText, setDisplayedText] = useState("")
+  const [displayedText, setDisplayedText] = useState('')
   const [isTyping, setIsTyping] = useState(false)
 
   const contentArray = Array.isArray(content) ? content : [content]
@@ -80,7 +88,7 @@ export function DialogWithInput({
       if (!visible) {
         setCurrentPage(0)
         if (autoType) {
-          setDisplayedText("")
+          setDisplayedText('')
           setIsTyping(true)
         } else {
           setDisplayedText(contentArray[0])
@@ -97,11 +105,13 @@ export function DialogWithInput({
 
     let currentIndex = 0
     const maxLength = currentContent.length
-    setDisplayedText("")
+    setDisplayedText('')
 
     const typingInterval = setInterval(() => {
       if (currentIndex < maxLength) {
-        setDisplayedText((prev) => prev + currentContent.charAt(currentIndex))
+        // Create a new string instead of appending to prevent text transformation issues
+        const newText = currentContent.substring(0, currentIndex + 1)
+        setDisplayedText(newText)
         currentIndex++
       } else {
         clearInterval(typingInterval)
@@ -117,7 +127,7 @@ export function DialogWithInput({
     // Only reset typing when the page actually changes
     if (visible) {
       if (autoType) {
-        setDisplayedText("")
+        setDisplayedText('')
         setIsTyping(true)
       } else {
         setDisplayedText(currentContent)
@@ -158,7 +168,12 @@ export function DialogWithInput({
         {title && (
           <div className="flex items-center justify-between border-b border-border bg-muted/50 px-4 py-2">
             <h3 className="font-semibold">{title}</h3>
-            <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-6 w-6"
+              onClick={onClose}
+            >
               <X className="h-4 w-4" />
               <span className="sr-only">Close</span>
             </Button>
@@ -170,7 +185,7 @@ export function DialogWithInput({
           {portrait && (
             <div className="mr-4 h-20 w-20 shrink-0 overflow-hidden rounded-md border">
               <img
-                src={portrait || "/placeholder.svg"}
+                src={portrait || '/placeholder.svg'}
                 alt="Character portrait"
                 className="h-full w-full object-cover"
               />
@@ -179,8 +194,12 @@ export function DialogWithInput({
 
           {/* Display text normally without any special formatting */}
           <div className="flex-1 font-medium">
-            {displayedText}
-            {isTyping && <span className="animate-pulse">▌</span>}
+            <div
+              dangerouslySetInnerHTML={{
+                __html: displayedText.replace(/\n/g, '<br>'),
+              }}
+            />
+            {isTyping && showCursor && <span className="animate-pulse">▌</span>}
           </div>
         </div>
 
@@ -192,11 +211,17 @@ export function DialogWithInput({
               <Button
                 key={index}
                 onClick={() => handleResponseSelect(option.text)}
-                variant={option.type === "positive" ? "default" : option.type === "negative" ? "outline" : "secondary"}
+                variant={
+                  option.type === 'positive'
+                    ? 'default'
+                    : option.type === 'negative'
+                    ? 'outline'
+                    : 'secondary'
+                }
                 className={cn(
-                  "justify-start text-left",
-                  option.type === "positive" && "border-l-4 border-l-green-500",
-                  option.type === "negative" && "border-l-4 border-l-red-500",
+                  'justify-start text-left',
+                  option.type === 'positive' && 'border-l-4 border-l-green-500',
+                  option.type === 'negative' && 'border-l-4 border-l-red-500'
                 )}
               >
                 {/* Pass the exact text without any transformation */}
@@ -215,8 +240,10 @@ export function DialogWithInput({
                 <div
                   key={index}
                   className={cn(
-                    "h-1.5 w-1.5 rounded-full",
-                    index === currentPage ? "bg-primary" : "bg-muted-foreground/30",
+                    'h-1.5 w-1.5 rounded-full',
+                    index === currentPage
+                      ? 'bg-primary'
+                      : 'bg-muted-foreground/30'
                   )}
                 />
               ))}
@@ -231,8 +258,13 @@ export function DialogWithInput({
 
             {/* Next button (only shown when not on last page or when typing) */}
             {(!isLastPage || isTyping) && (
-              <Button variant="outline" size="sm" className="flex items-center gap-1" onClick={handleNext}>
-                {isTyping ? "Skip" : "Next"}
+              <Button
+                variant="outline"
+                size="sm"
+                className="flex items-center gap-1"
+                onClick={handleNext}
+              >
+                {isTyping ? 'Skip' : 'Next'}
                 {!isTyping && <ChevronRight className="h-4 w-4" />}
               </Button>
             )}
@@ -242,4 +274,3 @@ export function DialogWithInput({
     </div>
   )
 }
-

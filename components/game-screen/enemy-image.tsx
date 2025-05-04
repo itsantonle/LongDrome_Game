@@ -10,14 +10,14 @@ function EnemyImage(props: EnemyImageProps) {
   const { amiability } = props
 
   // Determine the enemy image based on amiability levels
-  let imageSrc = '/placeholder.svg?text=FriendlyGuardian&width=120&height=120'
+  let imageSrc = '/ldrome_guardian_friendly.jpg'
   let imageClass = 'filter brightness-110'
 
   if (amiability < GAME_CONFIG.AMIABILITY_THRESHOLDS.HOSTILE) {
-    imageSrc = '/placeholder.svg?text=HostileGuardian&width=120&height=120'
+    imageSrc = '/ldrome_guardian_hostile.jpg'
     imageClass = 'filter hue-rotate-180'
   } else if (amiability < GAME_CONFIG.AMIABILITY_THRESHOLDS.FRIENDLY) {
-    imageSrc = '/placeholder.svg?text=NeutralGuardian&width=120&height=120'
+    imageSrc = '/ldrome_guardian.jpg'
     imageClass = ''
   }
 

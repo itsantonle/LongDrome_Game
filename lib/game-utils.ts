@@ -52,6 +52,7 @@
  *    - Increase the amiability threshold in canAccessHome()
  */
 
+import { GAME_CONFIG } from '@/app/page'
 import type { GuardianDialog } from './game-types'
 import {
   findLongestPalindromeBruteForce,
@@ -524,7 +525,10 @@ export function calculateDamage(
  * @returns Boolean indicating if home is accessible
  */
 export function canAccessHome(gameState: string, amiability: number): boolean {
-  return gameState === 'victory' || amiability >= 70
+  return (
+    gameState === 'victory' ||
+    amiability >= GAME_CONFIG.AMIABILITY_THRESHOLDS.FRIENDLY
+  )
 }
 
 /**
@@ -539,10 +543,10 @@ export function getHomeAccessMessage(
   npcName: string
 ): string {
   if (gameState === 'victory') {
-    return "You have earned the Guardian's respect and can now return home."
-  } else if (amiability >= 70) {
-    return 'The Guardian seems to trust you. You may return home if you wish.'
+    return `You have earned ${npcName}'s respect and can now return home.`
+  } else if (amiability >= GAME_CONFIG.AMIABILITY_THRESHOLDS.FRIENDLY) {
+    return `${npcName} seems to trust you. You may return home if you wish.`
   } else {
-    return 'The Guardian blocks your path. You cannot leave yet! Continue to improve your relationship with the Guardian.'
+    return `${npcName} blocks your path. You cannot leave yet! Continue to improve your relationship with the Guardian.`
   }
 }

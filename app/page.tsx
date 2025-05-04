@@ -73,6 +73,7 @@ import PlayerHPMP from '@/components/game-screen/game-control-area/player-hp-mp'
 import GameAlert from '@/components/game-screen/game-control-area/game-alert'
 import ExternalSelectedSequence from '@/components/game-screen/game-control-area/external-selected-sequence'
 import ActionsButtons from '@/components/game-screen/side-button-area/action-buttons'
+import { Footer } from '@/components/nav/footer'
 
 /** DOCUMENTATION
  * DOCUMENTATION NOTES FOR LONGDROME
@@ -177,9 +178,11 @@ export default function Game() {
   const [turnCount, setTurnCount] = useState(0)
   const { MAX_TURNS } = GAME_CONFIG
 
-  /**  GENERATE SEQUENCE USEEFFECT  BLOCK
+  /**  GENERATE SEQUENCE USEEFFECT BLOCK
    * - generates a sequence if the game state is not tutorial or home and if the currecnt colorSequence is 0
    * - useeffect takes the gameState and currentColorSequence.length as dependencies
+   * - if you want to see how a random palindromic block is generated @see generateRandomSequence
+   * - note that colors refers to an array of strings that are predefined @see COLORS
    */
   useEffect(() => {
     if (
@@ -191,13 +194,22 @@ export default function Game() {
     }
   }, [gameState, currentColorSequence.length])
 
+  const generateNewSequence = () => {
+    const newSequence = generateRandomSequence(5, 12, turnCount)
+    setCurrentColorSequence(newSequence)
+    setSelectedIndices([])
+    setShowOptimalPalindrome(false)
+    setHasSubmittedThisTurn(false) // Reset submission state for new sequence
+  }
+
   /**  HOME ACCESS USEEFFECT BLOCK
-   *
+   * the canAccessHome in the game-utils will return turn if  amiabiliy >=  @see GAME_CONFIG.AMIABILITY_THRESHOLDS.FRIENDLY
+   * the homeAccess if of @type {boolean}
+   * the conditional if below ensures conditions when the home dialog pops up @see canGoHomeDialog in ./dialog-test.ts
    */
   useEffect(() => {
     const homeAccess = canAccessHome(gameState, enemyStats.amiability)
 
-    // If home just became accessible and we haven't shown the prompt yet
     if (homeAccess && !canGoHome && !homePromptShown && gameState !== 'home') {
       setDialogTitle(npcName)
       setDialogContent(canGoHomeDialog)
@@ -208,23 +220,21 @@ export default function Game() {
     setCanGoHome(homeAccess)
   }, [gameState, enemyStats.amiability, canGoHome, homePromptShown])
 
-  // Find the longest palindrome whenever the sequence changes
+  /**  OPTIMAL PALINDROME USEEFFECT BLOCK
+   * this heavily relies on the client helper function @see determineOptimalPalindrome which must be supplied with @param currentColorSequence
+   * the dependency array means that the useEffect fires everytime the @see currentColorSequence changes
+   */
   useEffect(() => {
     if (currentColorSequence.length > 0) {
       setOptimalPalindrome(determineOptimalPalindrome(currentColorSequence))
     }
   }, [currentColorSequence])
 
-  // Generate a new color sequence - LOOK AT PALINDROME UTILS FOR THIS
-  const generateNewSequence = () => {
-    const newSequence = generateRandomSequence(5, 12, turnCount)
-    setCurrentColorSequence(newSequence)
-    setSelectedIndices([])
-    setShowOptimalPalindrome(false)
-    setHasSubmittedThisTurn(false) // Reset submission state for new sequence
-  }
-
-  // Handle tutorial completion
+  /**  TUTORIAL COMPLETE FUNCTION BLOCK
+   *  this function @see handleTutorialComplete runs when @see TutorialTransition @prop {onComplete} is called is of type @function
+   *  this sets the game state to idle
+   *  this also forces a new sequence to regenerate using the @see generateNewSequence handler function
+   */
   const handleTutorialComplete = () => {
     setTutorialComplete(true)
     setGameState('idle')
@@ -261,7 +271,15 @@ export default function Game() {
   //   return fetchresponseOptions(turnCount)
   // }
 
-  // Start a new turn
+  /**  START TURN HANDLER BLOCK
+   * @type {GameState} should be idle, the conditional if statement imposes this
+   * the idle @type {GameState} will now be shifted to the userTurn state
+   * the turncount starts at 0 so add + 1 to reflect changes in natural counting order
+   * @see prepareForBattleDialog to edit the text set in teh gameText
+   * the following codes are to reset the states for each round by setting them to false
+   * affected are @see hasTalkedThisRound @see hasRestedThisTurn @see hasSubmittedThisTurn
+   */
+
   const startTurn = () => {
     if (gameState !== 'idle') return
 
@@ -295,6 +313,16 @@ export default function Game() {
   //     return newSelection.sort((a, b) => a - b)
   //   })
   // }
+
+  /**  BLOCK SELECTION HANDLER BLOCK
+   *  this handler relies heavily on the @see gettoggleBlockSelection which takes the following params:
+   *  @param index @type {number}
+   *  @param gameState @type {GameState}
+   *  @param selectedIndices @type {number[]}
+   *  @param setSelectedIndices @function
+   *  @param setGameText @function
+   * this handler is called by the @see ColorSequence component
+   */
   const toggleBlockSelection = (index: number) => {
     gettoggleBlockSelection(
       index,
@@ -305,17 +333,37 @@ export default function Game() {
     )
   }
 
-  // Check if selected blocks form a continuous sequence
+  /**  ISSELECTIONCONTINUOS HANDLER BLOCK
+   *  this handler relies heavily on the @see determineSelectionisContinuous helper function
+   *  has the @param selectedIndices of @type {number[]}
+   *  this is called by the handler @see submitSelection
+   */
   const isSelectionContinuous = () => {
     return determineSelectionisContinuous(selectedIndices)
   }
 
-  // Get the selected color sequence
+  /**  SELECTEDCOlORS HANDLER BLOCK
+   * <START HERE>
+   *  this handler takes the @param index provided and returns a array of @type {string[]} containing the colors selected found by their array index
+   *  this is used to analyze if two adjacent colors are 'palindromic' by saying 'green, green' is palindromic when next to each other @see isPalindrome
+   * this is called by the handler @see submitSelection
+   */
   const getSelectedColors = () => {
     return selectedIndices.map((index) => currentColorSequence[index])
   }
 
-  // Submit the user's selection
+  /**  SUBMIT SELECTION HANDLER BLOCK
+   * relies on @see getSelectedColors @see isSelectionContinuous @see isPalindrome to ensure that the selection is continuos and palindromic
+   * when not palindromic sets gameText as @see selectionNotPalindromic
+   * when not continuous sets gameText as @see selectionNotContinuosDialog
+   * relies on the @see userFoundOptimalPalindrome to determine if the user has found the optimal palindrome
+   * the if conditional with the @type {GameState} === 'final battle' is crucial as the user needs to find the optimal palindrome to win or lose otherwise
+   * sets the gameState to victory if optimal and gameOver if not @see GameState
+   * if the user submits and it's not the final battle then the gameState userTurn is shifted to enemyTurn
+   * if the user does not find the optimal palindrome it wiill show it by setting @see setShowOptimalPalindrome to true and return a dialog
+   * if the user does find it it will return a dialog
+   * will move on to set the gameState to enemey turn and call the @see enemyTurn which is documented after this block
+   */
   const submitSelection = () => {
     // Check if user has already submitted this turn
     if (hasSubmittedThisTurn) {
@@ -392,7 +440,6 @@ export default function Game() {
       setGameText(
         `Excellent! You found the optimal palindrome of length ${userPalindromeLength}!`
       )
-      // Note: Removed the amiability increase that was here previously
     }
 
     // Move to enemy turn
@@ -401,8 +448,20 @@ export default function Game() {
       enemyTurn()
     }, 2000)
   }
+  // end of handle submit
 
-  // Handle the enemy's turn
+  /**  ENEMY TURN  HANDLER BLOCK
+   * since the enemy will always choose the optimal palindrome, will set showOptimalPalindrome to true
+   * the state gameTexxt will be set to the @see enemeyPreparingDialog
+   * if the user has found the optimal palindrome previously, the user will take no damage
+   * otherwise the damage factor relies on the @see calculateDamage which will dispatch the setStats and change the characteer hp characters stats @see CharacterStats
+   * this also checks if the user health is <= 0 on the next user turn, that means the user has one more extra chance before losing and calls aupon the gameOverDialog @see gameOverDialog
+   * if the user has exceeded MAX-TURNS @see MAX_TURNS , the final battle enemy turn plays. This is checked by seeing if the current amiabliity is >= to the @see GAME_CONFIG.AMIABILITY_THRESHOLDS.FRIENDLY
+   * if it is, then it is an automatic victory and the final battle sequence is skipped.
+   * If not, then sets the FinalBattle to true, generating a new sequence and setting the gameState to userTurn
+   * Else, it will end the turn and set the gameState to idle, generating a new sequence as well as prompting the user to use the 'Talk' option
+   */
+
   const enemyTurn = () => {
     setGameText(enemeyPreparingDialog)
 
@@ -493,7 +552,14 @@ export default function Game() {
     }, 1500)
   }
 
-  // Update the handleTalk function to use different dialog for each turn
+  //end of enemy turn
+
+  /**  HANDLETALK  HANDLER BLOCK
+   * this relies on the helper function generateTalkDialog  @see generateTalkDialog to return appropriate dialog elements
+   * if there an isHomeDialog property then it means the game state is home
+   * if there is a healing property then apply healing and increase mp using spread operator then modify hp and mp
+   * setInputDialog and hasTalkedthisRound to true
+   */
   const handleTalk = () => {
     const dialogData = generateTalkDialog(
       gameState,
@@ -532,7 +598,13 @@ export default function Game() {
     setHasTalkedThisRound(true)
   }
 
-  // Handle ENENY RESPONSE TO USER SEELCTION
+  /**  HANDLEDIALOGRESPONSE HANDLER BLOCK
+   * @see calculateAmiabilityChange relies on the caculateAmiabilityChange helper function to get amiabilty change for different dialog responses
+   * @see enemyStats sets the amiabilty of the enemy to add the amiability change
+   * @see amiabilityChangeIndicator sets the amiability change to the amiabiltychange return from calculateAmiablityChange then clears it after a delay
+   * @see getEnemyResponse to get the enemy response based on amiability
+   * the last part amiabilty the amiabilty text to the current gametext
+   */
   const handleDialogResponse = (response: string) => {
     const amiabilityChange = calculateAmiabilityChange(response, turnCount)
 
@@ -587,6 +659,12 @@ export default function Game() {
   // }
 
   // Check home access and either go home or show modal
+
+  /**  CHECKHOMECCESS HANDLER BLOCK
+   * @see canAccessHome = relies on this function to see if the user can access home
+   * @see goHome- is called when the user can go home
+   * @see homeAccessModal - is called to inform the user if they cannot go home instead
+   */
   const checkHomeAccess = () => {
     if (canAccessHome(gameState, enemyStats.amiability)) {
       goHome()
@@ -594,8 +672,9 @@ export default function Game() {
       setHomeAccessModal(true)
     }
   }
-
-  // Go home (only available after victory or good relationship)
+  /**  GOHOME HANDLER BLOCK
+   * @see checkHomeAccess - calls this helper function to see the state to home
+   */
   const goHome = () => {
     setGameState('home')
     setGameText(
@@ -605,7 +684,10 @@ export default function Game() {
     setHomeAccessModal(false)
   }
 
-  // Return to temple
+  /**  RETURNTOTEMPLE HANDLER BLOCK
+   * @see gameState if the gamestate is not home, then returns nothing
+   * othwrwise generate a new sequence and welcome the user  back to the temple (might change this location idk)
+   */
   const returnToTemple = () => {
     if (gameState !== 'home') return
 
@@ -616,7 +698,12 @@ export default function Game() {
     )
   }
 
-  // Handle rest action (when at home)
+  /**  RETURNTOTEMPLE HANDLER BLOCK
+   * @see hasRestedThisTurn - a boolean that is true if the user has already rested,
+   * else recover some of the hp by referencing the game_config
+   * @see GAME_CONFIG.REST_HEALING.HP @see GAME_CONFIG.REST_HEALING.MP - the configurations that affect the increase of mp and hp
+   * set the hasRestedThisTurn to true after doing so
+   */
   const handleRest = () => {
     if (hasRestedThisTurn) {
       setGameText(
@@ -634,12 +721,22 @@ export default function Game() {
     setHasRestedThisTurn(true)
   }
 
-  // Handle read action (when at home)
+  /**  HANDLEREAD HANDLER BLOCK
+   @see setReadingBook - the dispatch called to set the Reading book to true. Is used to denote that the user is reading the book. 
+   */
   const handleRead = () => {
     setReadingBook(true)
   }
 
-  // Handle magic action - now uses the optimal palindrome
+  /**  HANDLEREAD HANDLER BLOCK
+   * <start here>
+   * @see performMagicAction - the helper function that the result variable relies on.
+   * if the result is not sucessful, display the result.message
+   * @see stats.mp - will be changed depending on the game config's magic cost
+   * @see GAME_CONFIG.MAGIC_COST - the basis for magic cost deduction in stats.mp
+   * @see showOptimalPalindrome - if the result is successful and has selected indices, then sets the current selected indices to the
+   *  result.selectedIncdices (which are always the optimal palindrome indices) and the result.message as gameText
+   */
   const handleMagic = () => {
     const result = performMagicAction(
       gameState,
@@ -665,11 +762,16 @@ export default function Game() {
     setGameText(result.message)
   }
 
+  /**  HANDLEMODALCLOSE HANDLER BLOCK
+   * @see homeAccessModal - sets false when the function is ran
+   */
   const handleHomeModalClose = () => {
     setHomeAccessModal(false)
   }
 
-  // Check if buttons should be disabled based on game state
+  /**  AREBUTTONSDISABLEE HANDLER BLOCK
+   * @returns {true} - if the gameState is either gameOver or victory, this ensure that action buttons cannot be clicked in this state
+   */
   const areButtonsDisabled = () => {
     return gameState === 'gameOver' || gameState === 'victory'
   }
@@ -695,147 +797,154 @@ export default function Game() {
   //   }
   // }
 
+  /* ACTUAL COMPONENT RETURN BLOCK
+    start here 
+   */
+
   return (
-    <div className="container flex min-h-screen flex-col items-center justify-center py-10">
-      <div className="mb-16"></div>
+    <>
+      <div className="container flex min-h-screen flex-col items-center justify-center py-10">
+        <div className="mb-16"></div>
 
-      {/* TUTORIAL DIALOG */}
-      {gameState === 'tutorial' && !tutorialComplete && (
-        <TutorialTransition onComplete={handleTutorialComplete} />
-      )}
+        {/* TUTORIAL DIALOG */}
+        {gameState === 'tutorial' && !tutorialComplete && (
+          <TutorialTransition onComplete={handleTutorialComplete} />
+        )}
 
-      {/* GO HOME OPTION */}
+        {/* GO HOME OPTION */}
 
-      {homeAccessModal && (
-        <>
-          <HomeAccessModal
-            gameState={gameState}
-            enemyAmiability={enemyStats.amiability}
-            isOpen={homeAccessModal}
-            onClose={handleHomeModalClose}
-            npcName={npcName}
-          />
-        </>
-      )}
-
-      {/* // remove this && because the thing itself has conditional rendering */}
-      {readingBook && (
-        <ReadingBookModal
-          isOpen={readingBook}
-          onClose={() => setReadingBook(false)}
-        />
-      )}
-
-      <div className="w-full max-w-4xl">
-        {/* Game Container */}
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]">
-          {/* Main Game Area */}
-          <div className="flex flex-col">
-            {/* Home/Temple buttons */}
-            <HomeTempleButtons
+        {homeAccessModal && (
+          <>
+            <HomeAccessModal
               gameState={gameState}
-              checkHomeAccess={checkHomeAccess}
-              returnToTemple={returnToTemple}
-              areButtonsDisabled={areButtonsDisabled}
-              canGoHome={canGoHome}
-              btnName="Ancient Temple"
+              enemyAmiability={enemyStats.amiability}
+              isOpen={homeAccessModal}
+              onClose={handleHomeModalClose}
+              npcName={npcName}
             />
-            {/* Game Screen */}
-            <Card className="relative overflow-hidden border-2 border-primary/30 p-0">
-              {/* Enemy stats bar */}
-              {gameState !== 'home' && (
-                <EnemyStatusBar
-                  gameState={gameState}
-                  enemyStats={enemyStats}
-                  amiabilityChangeIndicator={amiabilityChangeIndicator} // Changes dynamically
-                  npcName={npcName} // Displayed as the enemy’s name
-                />
-              )}
-              {/* Game Screen Background */}
-              <div className="relative h-[360px] w-full overflow-hidden bg-black">
-                <GameBackground gameState={gameState} />
+          </>
+        )}
 
-                {gameState !== 'home' && (
-                  <>
-                    {/* Enemy */}
-                    <EnemyImage amiability={enemyStats.amiability} />
+        {/* // remove this && because the thing itself has conditional rendering */}
+        {readingBook && (
+          <ReadingBookModal
+            isOpen={readingBook}
+            onClose={() => setReadingBook(false)}
+          />
+        )}
 
-                    {/* Color Sequence Area - Positioned at the bottom of the screen */}
-                    <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md">
-                      {currentColorSequence.length > 0 && (
-                        <div className="space-y-4">
-                          {/* Current Color Sequence */}
-                          <ColorSequence
-                            currentColorSequence={currentColorSequence}
-                            selectedIndices={selectedIndices}
-                            showOptimalPalindrome={showOptimalPalindrome}
-                            optimalPalindrome={optimalPalindrome}
-                            COLORS={COLORS}
-                            toggleBlockSelection={(index) =>
-                              toggleBlockSelection(index)
-                            }
-                          />
-
-                          {/* Selected Sequence */}
-                          {selectedIndices.length > 0 && (
-                            <SelectedSequence
-                              selectedIndices={selectedIndices}
-                              currentColorSequence={currentColorSequence}
-                              COLORS={COLORS}
-                              isPalindrome={isPalindrome}
-                              getSelectedColors={getSelectedColors}
-                            />
-                          )}
-
-                          {/* Submit Button */}
-                          {(gameState === 'userTurn' || finalBattle) &&
-                            selectedIndices.length > 0 &&
-                            !hasSubmittedThisTurn && (
-                              <div className="flex justify-center">
-                                <Button
-                                  size="sm"
-                                  onClick={submitSelection}
-                                  disabled={
-                                    !isSelectionContinuous() ||
-                                    !isPalindrome(getSelectedColors())
-                                  }
-                                >
-                                  Submit Selection
-                                </Button>
-                              </div>
-                            )}
-                        </div>
-                      )}
-                    </div>
-                  </>
-                )}
-
-                {/* Character */}
-                <CharacterImage hp={stats.hp} maxHp={stats.maxHp} />
-              </div>
-
-              {/* Game Text Box */}
-              <div className="border-t-2 border-primary/30 bg-muted/80 p-4">
-                <p className="font-mono text-sm leading-relaxed">{gameText}</p>
-              </div>
-            </Card>
-
-            {/* Game Controls */}
-            <Card className="mt-4 border-2 border-primary/30 p-4">
-              {/* Game Status */}
-              <GameStatus gameState={gameState} startTurn={startTurn} />
-
-              {/* Health and MP BAR */}
-
-              <PlayerHPMP
-                hp={stats.hp}
-                maxHp={stats.maxHp}
-                mp={stats.mp}
-                maxMp={stats.maxMp}
+        <div className="w-full max-w-4xl">
+          {/* Game Container */}
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]">
+            {/* Main Game Area */}
+            <div className="flex flex-col">
+              {/* Home/Temple buttons */}
+              <HomeTempleButtons
+                gameState={gameState}
+                checkHomeAccess={checkHomeAccess}
+                returnToTemple={returnToTemple}
+                areButtonsDisabled={areButtonsDisabled}
+                canGoHome={canGoHome}
+                btnName="Ancient Temple"
               />
+              {/* Game Screen */}
+              <Card className="relative overflow-hidden border-2 border-primary/30 p-0">
+                {/* Enemy stats bar */}
+                {gameState !== 'home' && (
+                  <EnemyStatusBar
+                    gameState={gameState}
+                    enemyStats={enemyStats}
+                    amiabilityChangeIndicator={amiabilityChangeIndicator} // Changes dynamically
+                    npcName={npcName} // Displayed as the enemy’s name
+                  />
+                )}
+                {/* Game Screen Background */}
+                <div className="relative h-[360px] w-full overflow-hidden bg-black">
+                  <GameBackground gameState={gameState} />
 
-              {/* Always show color sequence in game controls when in user turn */}
-              {/* {(gameState === 'userTurn' || finalBattle) &&
+                  {gameState !== 'home' && (
+                    <>
+                      {/* Enemy */}
+                      <EnemyImage amiability={enemyStats.amiability} />
+
+                      {/* Color Sequence Area - Positioned at the bottom of the screen */}
+                      <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md">
+                        {currentColorSequence.length > 0 && (
+                          <div className="space-y-4">
+                            {/* Current Color Sequence */}
+                            <ColorSequence
+                              currentColorSequence={currentColorSequence}
+                              selectedIndices={selectedIndices}
+                              showOptimalPalindrome={showOptimalPalindrome}
+                              optimalPalindrome={optimalPalindrome}
+                              COLORS={COLORS}
+                              toggleBlockSelection={(index) =>
+                                toggleBlockSelection(index)
+                              }
+                            />
+
+                            {/* Selected Sequence */}
+                            {selectedIndices.length > 0 && (
+                              <SelectedSequence
+                                selectedIndices={selectedIndices}
+                                currentColorSequence={currentColorSequence}
+                                COLORS={COLORS}
+                                isPalindrome={isPalindrome}
+                                getSelectedColors={getSelectedColors}
+                              />
+                            )}
+
+                            {/* Submit Button */}
+                            {(gameState === 'userTurn' || finalBattle) &&
+                              selectedIndices.length > 0 &&
+                              !hasSubmittedThisTurn && (
+                                <div className="flex justify-center">
+                                  <Button
+                                    size="sm"
+                                    onClick={submitSelection}
+                                    disabled={
+                                      !isSelectionContinuous() ||
+                                      !isPalindrome(getSelectedColors())
+                                    }
+                                  >
+                                    Submit Selection
+                                  </Button>
+                                </div>
+                              )}
+                          </div>
+                        )}
+                      </div>
+                    </>
+                  )}
+
+                  {/* Character */}
+                  <CharacterImage hp={stats.hp} maxHp={stats.maxHp} />
+                </div>
+
+                {/* Game Text Box */}
+                <div className="border-t-2 border-primary/30 bg-muted/80 p-4">
+                  <p className="font-mono text-sm leading-relaxed">
+                    {gameText}
+                  </p>
+                </div>
+              </Card>
+
+              {/* Game Controls */}
+              <Card className="mt-4 border-2 border-primary/30 p-4">
+                {/* Game Status */}
+                <GameStatus gameState={gameState} startTurn={startTurn} />
+
+                {/* Health and MP BAR */}
+
+                <PlayerHPMP
+                  hp={stats.hp}
+                  maxHp={stats.maxHp}
+                  mp={stats.mp}
+                  maxMp={stats.maxMp}
+                />
+
+                {/* Always show color sequence in game controls when in user turn */}
+                {/* {(gameState === 'userTurn' || finalBattle) &&
                 currentColorSequence.length > 0 && (
                   <div className="mt-4 p-2 bg-black/20 rounded-md">
                     <div className="text-sm font-medium mb-2">
@@ -893,106 +1002,111 @@ export default function Game() {
                     )}
                   </div>
                 )} */}
-              {/* Game alert for the status  */}
-              <GameAlert gameState={gameState} />
+                {/* Game alert for the status  */}
+                <GameAlert gameState={gameState} />
 
-              {/* Show color selection status when in user turn */}
-              <ExternalSelectedSequence
-                gameState={gameState}
-                finalBattle={finalBattle}
-                selectedIndices={selectedIndices}
-                currentColorSequence={currentColorSequence}
-                COLORS={COLORS}
-                isPalindrome={isPalindrome}
-                getSelectedColors={getSelectedColors}
-              />
-            </Card>
+                {/* Show color selection status when in user turn */}
+                <ExternalSelectedSequence
+                  gameState={gameState}
+                  finalBattle={finalBattle}
+                  selectedIndices={selectedIndices}
+                  currentColorSequence={currentColorSequence}
+                  COLORS={COLORS}
+                  isPalindrome={isPalindrome}
+                  getSelectedColors={getSelectedColors}
+                />
+              </Card>
+            </div>
+
+            {/* Action Buttons */}
+            <ActionsButtons
+              gameState={gameState}
+              handleRest={handleRest}
+              handleRead={handleRead}
+              handleTalk={handleTalk}
+              handleMagic={handleMagic}
+              startTurn={startTurn}
+              hasRestedThisTurn={hasRestedThisTurn}
+              hasTalkedThisRound={hasTalkedThisRound}
+              areButtonsDisabled={areButtonsDisabled}
+              gameText={gameText}
+              stats={stats}
+            />
           </div>
-
-          {/* Action Buttons */}
-          <ActionsButtons
-            gameState={gameState}
-            handleRest={handleRest}
-            handleRead={handleRead}
-            handleTalk={handleTalk}
-            handleMagic={handleMagic}
-            startTurn={startTurn}
-            hasRestedThisTurn={hasRestedThisTurn}
-            hasTalkedThisRound={hasTalkedThisRound}
-            areButtonsDisabled={areButtonsDisabled}
-            gameText={gameText}
-            stats={stats}
-          />
         </div>
-      </div>
 
-      {/* MODAL THAT POPS UP WHEN GO HOME IS TRUE and during the final challenge */}
-      <GameDialog
-        isOpen={dialogOpen}
-        onClose={() => {
-          setDialogOpen(false)
-          // If this is the final battle dialog, make sure we're in userTurn state
-          if (finalBattle && gameState !== 'userTurn') {
-            setGameState('userTurn')
+        {/* MODAL THAT POPS UP WHEN GO HOME IS TRUE and during the final challenge */}
+        <GameDialog
+          isOpen={dialogOpen}
+          onClose={() => {
+            setDialogOpen(false)
+            // If this is the final battle dialog, make sure we're in userTurn state
+            if (finalBattle && gameState !== 'userTurn') {
+              setGameState('userTurn')
+            }
+          }}
+          title={dialogTitle}
+          content={dialogContent}
+          portrait={
+            dialogTitle === npcName
+              ? `/ldrome_guardian.jpg`
+              : gameState === 'victory'
+              ? '/ldrome_guardian_friendly.jpg'
+              : gameState === 'home'
+              ? '/ldrome_char.jpg'
+              : '/ldrome_guardian_hostile.jpg'
           }
-        }}
-        title={dialogTitle}
-        content={dialogContent}
-        portrait={
-          dialogTitle === npcName
-            ? `/placeholder.svg?text=${
-                enemyStats.amiability <
+          autoType={true}
+        />
+
+        {/* Dialog With Input Component when talking with enemy */}
+        <DialogWithInput
+          isOpen={inputDialogOpen}
+          onClose={() => setInputDialogOpen(false)}
+          title={dialogTitle}
+          content={dialogContent}
+          portrait={
+            enemyStats.amiability >= GAME_CONFIG.AMIABILITY_THRESHOLDS.FRIENDLY
+              ? `/ldrome_guardian_friendly.jpg`
+              : enemyStats.amiability <=
                 GAME_CONFIG.AMIABILITY_THRESHOLDS.HOSTILE
-                  ? 'Hostile'
-                  : enemyStats.amiability <
-                    GAME_CONFIG.AMIABILITY_THRESHOLDS.FRIENDLY
-                  ? 'Neutral'
-                  : 'Friendly'
-              }Guardian&width=80&height=80`
-            : '/placeholder.svg?text=Guardian&width=80&height=80'
-        }
-        autoType={true}
-      />
+              ? `/ldrome_guardian_hostile.jpg`
+              : `/ldrome_guardian.jpg`
+          }
+          autoType={true}
+          onRespond={handleDialogResponse}
+          turnCount={turnCount}
+          responseOptions={responseOptions}
+        />
 
-      {/* Dialog With Input Component when talking with enemy */}
-      <DialogWithInput
-        isOpen={inputDialogOpen}
-        onClose={() => setInputDialogOpen(false)}
-        title={dialogTitle}
-        content={dialogContent}
-        portrait={`/placeholder.svg?text=${npcName}&width=80&height=80`}
-        autoType={true}
-        onRespond={handleDialogResponse}
-        turnCount={turnCount}
-        responseOptions={responseOptions}
-      />
+        <style jsx global>{`
+          .pulse-border {
+            animation: pulse-border 2s infinite;
+          }
 
-      <style jsx global>{`
-        .pulse-border {
-          animation: pulse-border 2s infinite;
-        }
+          @keyframes pulse-border {
+            0% {
+              border-color: hsl(var(--primary) / 0.3);
+            }
+            50% {
+              border-color: hsl(var(--primary));
+            }
+            100% {
+              border-color: hsl(var(--primary) / 0.3);
+            }
+          }
 
-        @keyframes pulse-border {
-          0% {
-            border-color: hsl(var(--primary) / 0.3);
+          @keyframes fadeOut {
+            0% {
+              opacity: 1;
+            }
+            100% {
+              opacity: 0;
+            }
           }
-          50% {
-            border-color: hsl(var(--primary));
-          }
-          100% {
-            border-color: hsl(var(--primary) / 0.3);
-          }
-        }
-
-        @keyframes fadeOut {
-          0% {
-            opacity: 1;
-          }
-          100% {
-            opacity: 0;
-          }
-        }
-      `}</style>
-    </div>
+        `}</style>
+      </div>
+      <Footer />
+    </>
   )
 }

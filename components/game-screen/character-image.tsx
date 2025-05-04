@@ -13,14 +13,14 @@ function CharacterImage(props: CharacterImageProps) {
   const healthRatio = hp / maxHp
 
   // Determine character image based on health thresholds
-  let imageSrc = '/placeholder.svg?text=HealthyHero&width=64&height=96'
+  let imageSrc = '/ldrome_char.jpg'
   let imageClass = ''
 
   if (healthRatio <= GAME_CONFIG.HEALTH_THRESHOLDS.CRITICAL) {
-    imageSrc = '/placeholder.svg?text=DefeatedHero&width=64&height=96'
-    imageClass = 'opacity-60 filter grayscale'
+    imageSrc = '/ldrome_char_critical.jpg'
+    imageClass = 'opacity-80'
   } else if (healthRatio <= GAME_CONFIG.HEALTH_THRESHOLDS.WEAKENED) {
-    imageSrc = '/placeholder.svg?text=WeakenedHero&width=64&height=96'
+    imageSrc = '/ldrome_char_weak.jpg'
     imageClass = 'opacity-80'
   }
 

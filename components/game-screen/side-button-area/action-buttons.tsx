@@ -110,11 +110,7 @@ function ActionsButtons(props: ActionsButtonsProps) {
             variant="outline"
             size="lg"
             onClick={handleMagic}
-            disabled={
-              gameState !== 'userTurn' ||
-              stats.mp < GAME_CONFIG.MAGIC_COST ||
-              areButtonsDisabled()
-            }
+            disabled={gameState !== 'userTurn' || areButtonsDisabled()}
             className="flex h-16 w-16 flex-col items-center justify-center gap-1 border-2 border-primary/30 p-0 md:h-20 md:w-20"
           >
             <div className="flex h-6 w-6 items-center justify-center text-blue-500">

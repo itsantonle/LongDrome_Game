@@ -1,14 +1,21 @@
-"use client"
+'use client'
 
-import type React from "react"
+import type React from 'react'
 
-import { useRef } from "react"
-import Image from "next/image"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { Gamepad2, Users, Code, Github } from "lucide-react"
+import { useRef } from 'react'
+import Image from 'next/image'
+import { motion, useScroll, useTransform } from 'framer-motion'
+import { Github, Sword, MessageSquare, CogIcon } from 'lucide-react'
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 export default function AboutPage() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -16,66 +23,108 @@ export default function AboutPage() {
   // Sections for our parallax cards
   const sections = [
     {
-      id: "intro",
-      title: "About",
-      description: "A passion project focused on creating engaging puzzle experiences.",
-      icon: <Gamepad2 className="h-12 w-12 text-primary" />,
+      id: 'intro',
+      title: 'About',
+      description: 'Final Project For Algorithms - SE2231',
+      icon: (
+        <Button
+          variant="outline"
+          size="lg"
+          className="flex h-16 w-16 flex-col items-center justify-center gap-1 border-2 border-primary/30 p-0 md:h-20 md:w-20"
+        >
+          <Sword className="h-6 w-6 text-red-500" />
+          <span className="text-xs">Fight</span>
+        </Button>
+      ),
       content: (
         <>
-          <p className="mb-4">
-            Palindrome Guardian is a unique puzzle game that challenges players to find palindromic sequences in a
-            colorful world. The game combines strategy, pattern recognition, and a touch of narrative to create an
-            engaging experience for players of all skill levels.
+          <p className="mb-4 mt-4">
+            You're facing against an immortal entity that cannot be killed, it
+            has secrets and you need to understand them. Go through color blocks
+            and defend yourself against a foe who can hit YOU, but you CANNOT
+            hit it. A turn based combat that focuses on 'talking' and pattern
+            identification. Can you prove how good you are at the patterns?
           </p>
           <div className="mt-6 grid grid-cols-3 gap-4">
-            <div className="flex flex-col items-center rounded-lg bg-muted p-3">
+            {/* <div className="flex flex-col items-center rounded-lg bg-muted p-3">
               <span className="text-xl font-bold text-primary">2023</span>
               <span className="text-xs text-muted-foreground">Founded</span>
             </div>
             <div className="flex flex-col items-center rounded-lg bg-muted p-3">
               <span className="text-xl font-bold text-primary">3</span>
-              <span className="text-xs text-muted-foreground">Games Released</span>
+              <span className="text-xs text-muted-foreground">
+                Games Released
+              </span>
             </div>
             <div className="flex flex-col items-center rounded-lg bg-muted p-3">
               <span className="text-xl font-bold text-primary">10K+</span>
-              <span className="text-xs text-muted-foreground">Players Worldwide</span>
-            </div>
+              <span className="text-xs text-muted-foreground">
+                Players Worldwide
+              </span>
+            </div> */}
           </div>
         </>
       ),
-      image: "/placeholder.svg?height=400&width=600",
+      image: '/about_aboutimg.png',
     },
     {
-      id: "team",
-      title: "The Developer",
-      description: "Meet the mind behind Palindrome Guardian.",
-      icon: <Users className="h-12 w-12 text-primary" />,
+      id: 'team',
+      title: 'The Developer',
+      description: 'Thoughts behind the creation of LongDrome.',
+      icon: (
+        <Button
+          variant="outline"
+          size="lg"
+          className="flex h-16 w-16 flex-col items-center justify-center gap-1 border-2 border-primary/30 p-0 md:h-20 md:w-20"
+        >
+          <MessageSquare className="h-6 w-6 text-green-500" />
+          <span className="text-xs">Think</span>
+        </Button>
+      ),
       content: (
         <>
-          <p className="mb-4">
-            Palindrome Guardian was created by a solo developer with a passion for puzzle games and algorithmic
-            challenges. With a background in computer science and game design, the developer aims to create experiences
-            that are both entertaining and intellectually stimulating.
+          <p className="mb-4 mt-4">
+            Longdrome, originally named as Palindrome Guardian is created as a
+            requirement for Algorihtms class. Originally, the colors were
+            strings of text but I later on diverted to using a more color themed
+            approach by mapping color blocks together. The project utilizes
+            Manacher's Algo which finds the lognest palindromic strings - in the
+            game's case color blocks in linear time. The challenge was to find
+            an application for the algorithm. Since Manacher is usually utilized
+            in competitive programming, I had to find a way to implement it,
+            then I got inspired by DNA patterns and how Manacher's can help in
+            finding patterns.
           </p>
           <div className="mt-6 flex justify-center">
             <div className="flex flex-col items-center">
-              <div className="mb-2 overflow-hidden rounded-full border-2 border-primary h-24 w-24">
+              <div className="mb-2 overflow-hidden rounded-full border-2 border-primary h-20 w-20">
                 <Image
-                  src="/placeholder.svg?text=Dev&height=96&width=96"
+                  src="/Anton_profile.jpg"
                   alt="Developer"
                   width={96}
                   height={96}
                   className="object-cover"
                 />
               </div>
-              <span className="text-sm font-medium">Alex Morgan</span>
-              <span className="text-xs text-muted-foreground">Lead Developer & Designer</span>
+              <span className="text-sm font-medium">A. Legayada</span>
+              <span className="text-xs text-muted-foreground">
+                Developer & Designer
+              </span>
               <div className="mt-2 flex gap-2">
-                <Button variant="outline" size="sm">
-                  <Github className="mr-2 h-4 w-4" />
-                  GitHub
-                </Button>
-                <Button variant="outline" size="sm">
+                <Link href={'https://github.com/itsantonle'}>
+                  <Button variant="outline" size="sm">
+                    <Github className="mr-2 h-4 w-4" />
+                    GitHub
+                  </Button>
+                </Link>
+
+                <Button
+                  onClick={() => {
+                    window.alert('Coming Soon')
+                  }}
+                  variant="outline"
+                  size="sm"
+                >
                   Portfolio
                 </Button>
               </div>
@@ -83,23 +132,37 @@ export default function AboutPage() {
           </div>
         </>
       ),
-      image: "/placeholder.svg?height=400&width=600",
+      image: '/ldrome_guardian.jpg',
     },
     {
-      id: "technology",
-      title: "Our Technology",
-      description: "Cutting-edge tools powering immersive experiences.",
-      icon: <Code className="h-12 w-12 text-primary" />,
+      id: 'technology',
+      title: 'The techstack used',
+      description: 'Tools for stuff the do the work',
+      icon: (
+        <Button
+          variant="outline"
+          size="lg"
+          className="flex h-16 w-16 flex-col items-center justify-center gap-1 border-2 border-primary/30 p-0 md:h-20 md:w-20"
+        >
+          <CogIcon className="h-12 w-12 text-blue-500" />
+          <span className="text-xs">Tech</span>
+        </Button>
+      ),
       content: (
         <>
-          <p className="mb-4">
-            We leverage the latest game development technologies to create stunning visuals, responsive gameplay, and
-            seamless experiences across all platforms.
+          <p className="mb-4 mt-4">
+            I originally wanted to use a web engine like PhaserJS but since the
+            algorithm relies heavily on text and stuff for the initial test of
+            Palindrome guardian, I moved on to NextJS and React, later on i
+            decided to change up the whole project again somewhere along the
+            month of April and thus Longdrome was born
           </p>
           <div className="mt-4 space-y-2">
             <div className="rounded-lg bg-muted p-3">
               <h4 className="font-medium">Next.js & React</h4>
-              <p className="text-sm text-muted-foreground">Modern web technologies for responsive interfaces.</p>
+              <p className="text-sm text-muted-foreground">
+                Modern web technologies for responsive interfaces.
+              </p>
             </div>
             <div className="rounded-lg bg-muted p-3">
               <h4 className="font-medium">Algorithm Optimization</h4>
@@ -109,32 +172,39 @@ export default function AboutPage() {
             </div>
             <div className="rounded-lg bg-muted p-3">
               <h4 className="font-medium">Tailwind CSS</h4>
-              <p className="text-sm text-muted-foreground">Utility-first CSS for beautiful, responsive designs.</p>
+              <p className="text-sm text-muted-foreground">
+                Utility-first CSS for beautiful, responsive designs.
+              </p>
             </div>
           </div>
         </>
       ),
-      image: "/placeholder.svg?height=400&width=600",
+      image: '/about_techimg.png',
     },
   ]
 
   return (
     <div ref={containerRef} className="relative">
-      {/* Hero section with parallax background */}
       <div className="relative h-[50vh] overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage: "url('/placeholder.svg?height=1080&width=1920')",
-            transform: "translateY(var(--scroll-offset, 0))",
+            backgroundImage: "url('/ldrome_bg_temple.jpg')",
+            transform: 'translateY(var(--scroll-offset, 0))',
           }}
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background/0 to-background" />
         <div className="container relative z-10 flex h-full flex-col items-center justify-center text-center">
-          <h1 className="mb-4 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">About GameVerse</h1>
-          <p className="max-w-2xl text-lg text-muted-foreground">
-            We're on a mission to create immersive gaming experiences that bring people together.
-          </p>
+          <div className="relative w-auto h-auto max-w-full max-h-100">
+            <Image src="/ld_logo.png" alt="logo" width={500} height={100} />
+
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center translate-y-20">
+              <p className="max-w-2xl text-xs text-white bg-black/20 px-4 py-2 rounded-md">
+                Face upon an immortal foe and defend yourself with the language
+                of colors!
+              </p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -142,7 +212,12 @@ export default function AboutPage() {
       <div className="container py-20">
         <div className="space-y-40 md:space-y-64">
           {sections.map((section, index) => (
-            <ParallaxCard key={section.id} section={section} index={index} isEven={index % 2 === 0} />
+            <ParallaxCard
+              key={section.id}
+              section={section}
+              index={index}
+              isEven={index % 2 === 0}
+            />
           ))}
         </div>
       </div>
@@ -178,21 +253,29 @@ function ParallaxCard({ section, index, isEven }: ParallaxCardProps) {
   const cardRef = useRef<HTMLDivElement>(null)
   const { scrollYProgress } = useScroll({
     target: cardRef,
-    offset: ["start end", "end start"],
+    offset: ['start end', 'end start'],
   })
 
   const y = useTransform(scrollYProgress, [0, 1], [100, -100])
 
   const opacity = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0, 1, 1, 0])
 
-  const scale = useTransform(scrollYProgress, [0, 0.2, 0.8, 1], [0.8, 1, 1, 0.8])
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 0.2, 0.8, 1],
+    [0.8, 1, 1, 0.8]
+  )
 
   const imageY = useTransform(scrollYProgress, [0, 1], [50, -50])
 
   return (
     <div ref={cardRef} className="relative py-10">
       <motion.div style={{ opacity, scale }} className="relative z-10">
-        <div className={`grid gap-8 md:grid-cols-2 md:gap-12 ${isEven ? "" : "md:grid-flow-dense"}`}>
+        <div
+          className={`grid gap-8 md:grid-cols-2 md:gap-12 ${
+            isEven ? '' : 'md:grid-flow-dense'
+          }`}
+        >
           <Card className="border-2 border-primary/20 shadow-lg">
             <CardHeader className="flex flex-row items-center gap-4 pb-2">
               {section.icon}
@@ -206,10 +289,12 @@ function ParallaxCard({ section, index, isEven }: ParallaxCardProps) {
 
           <motion.div
             style={{ y: imageY }}
-            className={`relative flex items-center justify-center overflow-hidden rounded-lg ${isEven ? "md:order-last" : ""}`}
+            className={`relative flex items-center justify-center overflow-hidden rounded-lg ${
+              isEven ? 'md:order-last' : ''
+            }`}
           >
             <Image
-              src={section.image || "/placeholder.svg"}
+              src={section.image || '/placeholder.svg'}
               alt={section.title}
               width={600}
               height={400}
@@ -222,4 +307,3 @@ function ParallaxCard({ section, index, isEven }: ParallaxCardProps) {
     </div>
   )
 }
-

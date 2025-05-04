@@ -1,13 +1,13 @@
 import { GAME_CONFIG } from '@/app/page'
 import { responseToEnemy } from './dialog-text'
-import { ResponseOption } from './game-types'
+import { GameState, ResponseOption } from './game-types'
 import { findOptimalPalindrome, getGuardianDialog } from './game-utils'
 import { isPalindrome } from './palindrome-utils'
 
 // helper function for the toggleBlockSelection function on the main page
 export function gettoggleBlockSelection(
   index: number,
-  gameState: string,
+  gameState: GameState,
   selectedIndices: number[],
   setSelectedIndices: (newSelection: number[]) => void,
   setGameText: (message: string) => void
@@ -170,7 +170,7 @@ export const performMagicAction = (
   if (gameState !== 'userTurn' || stats.mp < GAME_CONFIG.MAGIC_COST) {
     return {
       success: false,
-      message: `You don't have enough MP to cast this spell! (Requires ${GAME_CONFIG.MAGIC_COST} MP)`,
+      message: `You try to cast a spell of revelation but it fails! (Requires ${GAME_CONFIG.MAGIC_COST} MP)`,
     }
   }
 
