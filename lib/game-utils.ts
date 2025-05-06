@@ -132,8 +132,8 @@ export const guardianDialogs: GuardianDialog[] = [
       'Continue this path, and knowledge shall be yours.',
       'I sense a growing connection between you and the ancient patterns.',
     ],
-    positiveKeywords: ['patience', 'learn', 'symmetry', 'listen'],
-    negativeKeywords: ['strength', 'take', 'quick', 'shortcut'],
+    positiveKeywords: ['appreciated', 'learn', 'wisdom', 'beauty'],
+    negativeKeywords: ['long', 'quickly', 'master'],
   },
   {
     hostile: [
@@ -154,8 +154,8 @@ export const guardianDialogs: GuardianDialog[] = [
       'Our meeting was perhaps not coincidental.',
       'The temple itself seems to respond differently to your presence now.',
     ],
-    positiveKeywords: ['balance', 'patience', 'harmony', 'respect'],
-    negativeKeywords: ['power', 'mastery', 'control', 'dominate'],
+    positiveKeywords: ['patience', 'harmony', 'true'],
+    negativeKeywords: ['control', 'benefit', 'power'],
   },
   {
     hostile: [
@@ -176,8 +176,8 @@ export const guardianDialogs: GuardianDialog[] = [
       'I find our exchanges educational.',
       "The temple's energies seem to flow more harmoniously in your presence now.",
     ],
-    positiveKeywords: ['learn', 'understand', 'harmony', 'balance'],
-    negativeKeywords: ['conquer', 'defeat', 'force', 'demand'],
+    positiveKeywords: ['protect', 'balance'],
+    negativeKeywords: ['dominate', 'obstacles'],
   },
   {
     hostile: [
@@ -198,8 +198,8 @@ export const guardianDialogs: GuardianDialog[] = [
       'I believe you may be ready for what comes next.',
       'The temple has accepted you. I can feel its ancient energies resonating with your presence.',
     ],
-    positiveKeywords: ['together', 'understand', 'learn', 'respect'],
-    negativeKeywords: ['power', 'challenge', 'defeat', 'overcome'],
+    positiveKeywords: ['journey', 'understanding', 'learn'],
+    negativeKeywords: ['fail', 'far', 'power', 'mine'],
   },
   {
     hostile: [
@@ -220,8 +220,8 @@ export const guardianDialogs: GuardianDialog[] = [
       'The ancient knowledge is almost within your grasp.',
       'Perhaps you are the one the prophecies spoke of.',
     ],
-    positiveKeywords: ['harmony', 'balance', 'respect', 'wisdom'],
-    negativeKeywords: ['power', 'control', 'dominate', 'force'],
+    positiveKeywords: ['harmony', 'balance', 'sharing', 'wisdom'],
+    negativeKeywords: ['mastered', 'power', 'show'],
   },
 ]
 

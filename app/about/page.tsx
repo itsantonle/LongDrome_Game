@@ -210,7 +210,7 @@ export default function AboutPage() {
 
       {/* Parallax card sections */}
       <div className="container py-20">
-        <div className="space-y-40 md:space-y-64">
+        <div className="space-y-40 md:space-y-64 text-xs sm:text-sm font-thin">
           {sections.map((section, index) => (
             <ParallaxCard
               key={section.id}
@@ -278,7 +278,7 @@ function ParallaxCard({ section, index, isEven }: ParallaxCardProps) {
         >
           <Card className="border-2 border-primary/20 shadow-lg">
             <CardHeader className="flex flex-row items-center gap-4 pb-2">
-              {section.icon}
+              <span className="hidden sm:block">{section.icon}</span>
               <div>
                 <CardTitle className="text-2xl">{section.title}</CardTitle>
                 <CardDescription>{section.description}</CardDescription>
