@@ -195,7 +195,7 @@ export function DialogWithInput({
           {/* Display text normally without any special formatting */}
           <div className="flex-1 font-medium">
             <div
-              className="text-sm sm:text-lg"
+              className="text-sm sm:text-lg font-mono"
               dangerouslySetInnerHTML={{
                 __html: displayedText.replace(/\n/g, '<br>'),
               }}

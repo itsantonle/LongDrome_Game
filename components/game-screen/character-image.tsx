@@ -25,13 +25,13 @@ function CharacterImage(props: CharacterImageProps) {
   }
 
   return (
-    <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+    <div className="absolute bottom-10 left-1/2 -translate-x-1/2 ">
       <Image
         src={imageSrc}
         alt="Character"
         width={64}
         height={96}
-        className={`object-contain ${imageClass}`}
+        className={`object-contain ${imageClass} rounded-md`}
       />
     </div>
   )

@@ -38,14 +38,7 @@ export const responseToEnemy: ResponsesToEnemy = {
       text: 'I need to learn more about this symmetry.',
       type: 'positive',
     },
-    {
-      text: 'Hail Guardian!',
-      type: 'neutral',
-    },
-    {
-      text: 'Is this my only path forward?',
-      type: 'neutral',
-    },
+
     {
       text: 'I demand to know the power behind these colors!',
       type: 'negative',

@@ -641,6 +641,25 @@ export default function Game() {
     setInputDialogOpen(false)
   }
 
+  // Handle name submission
+  // const handleNameSubmit = (name: string) => {
+  //   setPlayerName(name)
+  //   setShowNameInput(false)
+
+  //   // Show victory dialog
+  //   setGameState('victory')
+  //   setDialogTitle('Victory')
+  //   setDialogContent([
+  //     `Congratulations, ${name}!`,
+  //     'You have proven yourself worthy in the battle of palindromes.',
+  //     'The Ancient Guardian grants you passage and shares its ancient knowledge with you.',
+  //     'Your name shall be recorded in the annals of palindrome masters!',
+  //   ])
+  //   setDialogOpen(true)
+  // }
+
+  // Check home access and either go home or show modal
+
   /**  CHECKHOMECCESS HANDLER BLOCK
    * @see canAccessHome = relies on this function to see if the user can access home
    * @see goHome- is called when the user can go home
@@ -756,6 +775,27 @@ export default function Game() {
   const areButtonsDisabled = () => {
     return gameState === 'gameOver' || gameState === 'victory'
   }
+
+  // const inputRef = useRef<HTMLInputElement>(null)
+  // const [userResponse, setUserResponse] = useState('')
+  // const [isTyping, setIsTyping] = useState(false)
+  // const [currentPage, setCurrentPage] = useState(0)
+
+  // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  //   if (event.key === 'Enter') {
+  //     handleRespond()
+  //   }
+  // }
+
+  // const handleRespond = () => {
+  //   if (userResponse.trim()) {
+  //     handleDialogResponse(userResponse)
+  //     setUserResponse('')
+  //     if (inputRef.current) {
+  //       inputRef.current.blur()
+  //     }
+  //   }
+  // }
 
   /* ACTUAL COMPONENT RETURN BLOCK
     start here 
@@ -890,7 +930,7 @@ export default function Game() {
               </Card>
 
               {/* Game Controls */}
-              <Card className="mt-4 border-2 border-primary/30 p-4">
+              <Card className="mt-4 border-2 border-primary/30 bg-transparent p-4">
                 {/* Game Status */}
                 <GameStatus gameState={gameState} startTurn={startTurn} />
 
@@ -903,65 +943,6 @@ export default function Game() {
                   maxMp={stats.maxMp}
                 />
 
-                {/* Always show color sequence in game controls when in user turn */}
-                {/* {(gameState === 'userTurn' || finalBattle) &&
-                currentColorSequence.length > 0 && (
-                  <div className="mt-4 p-2 bg-black/20 rounded-md">
-                    <div className="text-sm font-medium mb-2">
-                      Color Sequence:
-                    </div>
-                    <div className="flex flex-wrap justify-center gap-1 mb-2">
-                      {currentColorSequence.map((color, index) => (
-                        <div
-                          key={`control-${index}`}
-                          className={`w-6 h-6 cursor-pointer transition-all ${
-                            selectedIndices.includes(index)
-                              ? 'ring-2 ring-white scale-110'
-                              : ''
-                          } ${
-                            showOptimalPalindrome &&
-                            index >= optimalPalindrome.start &&
-                            index <
-                              optimalPalindrome.start + optimalPalindrome.length
-                              ? 'ring-2 ring-yellow-400'
-                              : ''
-                          }`}
-                          style={{
-                            backgroundColor:
-                              COLORS.find((c) => c.name === color)?.value ||
-                              color,
-                          }}
-                          onClick={() => toggleBlockSelection(index)}
-                        ></div>
-                      ))}
-                    </div>
-
-                    {selectedIndices.length > 0 && (
-                      <>
-                        <div className="text-xs text-center mb-2">
-                          {isPalindrome(getSelectedColors())
-                            ? '✓ Valid Palindrome'
-                            : '✗ Not a palindrome'}
-                        </div>
-
-                        {!hasSubmittedThisTurn && (
-                          <div className="flex justify-center">
-                            <Button
-                              size="sm"
-                              onClick={submitSelection}
-                              disabled={
-                                !isSelectionContinuous() ||
-                                !isPalindrome(getSelectedColors())
-                              }
-                            >
-                              Submit Selection
-                            </Button>
-                          </div>
-                        )}
-                      </>
-                    )}
-                  </div>
-                )} */}
                 {/* Game alert for the status  */}
                 <GameAlert gameState={gameState} />
 

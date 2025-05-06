@@ -29,7 +29,7 @@ function EnemyImage(props: EnemyImageProps) {
           alt="Enemy"
           width={120}
           height={120}
-          className={`object-contain ${imageClass}`}
+          className={`object-contain ${imageClass} rounded-md`}
         />
       </div>
     </div>

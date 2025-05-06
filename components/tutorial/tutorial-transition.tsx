@@ -367,7 +367,7 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
           {currentTutorial.title}
         </h2>
 
-        <p className="mb-6 text-center text-sm sm:text-lg ">
+        <p className="mb-6 text-center text-sm sm:text-lg font-mono ">
           {currentTutorial.content}
         </p>
 

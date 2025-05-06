@@ -24,7 +24,7 @@ function EnemyStatusBar(props: EnemyStatusBarProps) {
   }
 
   return (
-    <div className="absolute top-0 left-0 right-0 z-10 bg-foreground/50 p-2">
+    <div className="absolute top-0 left-0 right-0 z-10 bg-foreground/20 p-2">
       <div className="flex items-center justify-between">
         <div className="text-xs text-white">{npcName}</div>
         <div className="text-xs text-white">
