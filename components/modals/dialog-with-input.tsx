@@ -220,7 +220,7 @@ export function DialogWithInput({
                     : 'secondary'
                 }
                 className={cn(
-                  'justify-start text-left overflow-x-auto overflow-y-hidden text-xs sm:text-sm',
+                  'justify-start text-left overflow-x-auto overflow-y-hidden text-xs sm:text-sm scrollbar-hide',
                   option.type === 'positive' && 'border-l-4 border-l-green-500',
                   option.type === 'negative' && 'border-l-4 border-l-red-500'
                 )}

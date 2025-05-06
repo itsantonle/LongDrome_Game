@@ -337,7 +337,7 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
   const currentTutorial = tutorialSteps[currentStep]
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 overflow-y-auto overflow-x-clip">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 overflow-y-auto overflow-x-clip scrollbar-hide">
       <motion.div
         className="w-full max-w-2xl rounded-lg border-2 border-primary/30 bg-background p-6 shadow-lg"
         initial={{ opacity: 0, y: 20 }}
