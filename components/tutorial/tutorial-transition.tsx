@@ -191,7 +191,7 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
     {
       title: 'Losing HP and MP',
       content:
-        "The Guardian will always find the longest palindrome. If yours is shorter, you'll take damage! If you're stuck: You can use the Magic Action button but it takes 20 MP! If your health drops to 0, you have one last chance before you truly lose!",
+        "The Guardian will always find the longest palindrome. If yours is shorter, you'll take damage! If you're stuck: You can use the Magic Action button but it takes 20 MP! If your health drops to 0, you'll have one last chance!",
       example: null,
       componenent: (
         <div className="flex flex-col gap-4 items-center">
@@ -199,7 +199,7 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
             <PlayerHPMP maxHp={100} hp={100} maxMp={50} mp={50} />
           </div>
           <ArrowBigDownIcon className="text-center" />{' '}
-          <span className="text-sm text-muted-foreground">
+          <span className="text-sm text-muted-foreground hidden sm:block">
             {' '}
             Taking damage or using the Magic Action Button
           </span>
@@ -237,7 +237,10 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
       componenent: (
         <>
           <div className="flex flex-col gap-4 items-center">
-            <p className="text-muted-foreground text-xs"> Response options</p>
+            <p className="text-muted-foreground text-xs hidden block:sm">
+              {' '}
+              Response options
+            </p>
             <div className="grid grid-cols-1 gap-2">
               {[
                 {
@@ -274,7 +277,7 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
               ))}
             </div>
             <ArrowBigDownIcon />
-            <p className="text-muted-foreground text-xs">
+            <p className="text-muted-foreground text-xs hidden block:sm">
               {' '}
               Improve Amiability to be able to Go Home
             </p>
@@ -334,7 +337,7 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
   const currentTutorial = tutorialSteps[currentStep]
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 overflow-y-auto overflow-x-clip">
       <motion.div
         className="w-full max-w-2xl rounded-lg border-2 border-primary/30 bg-background p-6 shadow-lg"
         initial={{ opacity: 0, y: 20 }}
@@ -360,11 +363,13 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
           ))}
         </div>
 
-        <h2 className="mb-4 text-center text-2xl font-bold">
+        <h2 className="mb-4 text-center text-lg sm:text-2xl  font-bold">
           {currentTutorial.title}
         </h2>
 
-        <p className="mb-6 text-center text-lg">{currentTutorial.content}</p>
+        <p className="mb-6 text-center text-sm sm:text-lg ">
+          {currentTutorial.content}
+        </p>
 
         {/* Example visualization */}
         {currentTutorial.example && (

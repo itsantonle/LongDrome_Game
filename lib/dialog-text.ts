@@ -39,10 +39,21 @@ export const responseToEnemy: ResponsesToEnemy = {
       type: 'positive',
     },
     {
+      text: 'Hail Guardian!',
+      type: 'neutral',
+    },
+    {
+      text: 'Is this my only path forward?',
+      type: 'neutral',
+    },
+    {
       text: 'I demand to know the power behind these colors!',
       type: 'negative',
     },
-    { text: "I'll take whatever knowledge I can get.", type: 'negative' },
+    {
+      text: 'I demand take control of the patterns with my own power!',
+      type: 'negative',
+    },
   ],
   secondRound: [
     {

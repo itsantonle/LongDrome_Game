@@ -22,7 +22,7 @@ function ColorSequence(props: ColorSequenceProps) {
   if (currentColorSequence.length === 0) return null
 
   return (
-    <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md">
+    <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md overflow-auto">
       <div className="space-y-4">
         {/* Current Color Sequence */}
         <div className="flex justify-center">
@@ -38,8 +38,8 @@ function ColorSequence(props: ColorSequenceProps) {
                 <div
                   key={index}
                   className={`w-8 h-8 cursor-pointer transition-all ${
-                    isSelected ? 'ring-2 ring-white scale-110' : ''
-                  } ${isPartOfPalindrome ? 'ring-2 ring-yellow-400' : ''}`}
+                    isSelected ? 'ring-2 ring-violet-400 scale-110' : ''
+                  } ${isPartOfPalindrome ? 'ring-2 ring-yellow-500' : ''}`}
                   style={{
                     backgroundColor:
                       COLORS.find((c) => c.name === color)?.value || color,

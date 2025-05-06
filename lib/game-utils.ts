@@ -110,8 +110,8 @@ export const guardianDialogs: GuardianDialog[] = [
       'Perhaps there is more to you than I first perceived.',
       'Your mind has a certain resonance with the ancient patterns.',
     ],
-    positiveKeywords: ['wisdom', 'harmony', 'balance', 'respect'],
-    negativeKeywords: ['power', 'demand', 'force', 'control'],
+    positiveKeywords: ['understand', 'balance', 'learn'],
+    negativeKeywords: ['power', 'demand', 'control'],
   },
   {
     hostile: [

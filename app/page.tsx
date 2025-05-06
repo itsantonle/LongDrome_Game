@@ -641,25 +641,6 @@ export default function Game() {
     setInputDialogOpen(false)
   }
 
-  // Handle name submission
-  // const handleNameSubmit = (name: string) => {
-  //   setPlayerName(name)
-  //   setShowNameInput(false)
-
-  //   // Show victory dialog
-  //   setGameState('victory')
-  //   setDialogTitle('Victory')
-  //   setDialogContent([
-  //     `Congratulations, ${name}!`,
-  //     'You have proven yourself worthy in the battle of palindromes.',
-  //     'The Ancient Guardian grants you passage and shares its ancient knowledge with you.',
-  //     'Your name shall be recorded in the annals of palindrome masters!',
-  //   ])
-  //   setDialogOpen(true)
-  // }
-
-  // Check home access and either go home or show modal
-
   /**  CHECKHOMECCESS HANDLER BLOCK
    * @see canAccessHome = relies on this function to see if the user can access home
    * @see goHome- is called when the user can go home
@@ -775,27 +756,6 @@ export default function Game() {
   const areButtonsDisabled = () => {
     return gameState === 'gameOver' || gameState === 'victory'
   }
-
-  // const inputRef = useRef<HTMLInputElement>(null)
-  // const [userResponse, setUserResponse] = useState('')
-  // const [isTyping, setIsTyping] = useState(false)
-  // const [currentPage, setCurrentPage] = useState(0)
-
-  // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (event.key === 'Enter') {
-  //     handleRespond()
-  //   }
-  // }
-
-  // const handleRespond = () => {
-  //   if (userResponse.trim()) {
-  //     handleDialogResponse(userResponse)
-  //     setUserResponse('')
-  //     if (inputRef.current) {
-  //       inputRef.current.blur()
-  //     }
-  //   }
-  // }
 
   /* ACTUAL COMPONENT RETURN BLOCK
     start here 

@@ -195,6 +195,7 @@ export function DialogWithInput({
           {/* Display text normally without any special formatting */}
           <div className="flex-1 font-medium">
             <div
+              className="text-sm sm:text-lg"
               dangerouslySetInnerHTML={{
                 __html: displayedText.replace(/\n/g, '<br>'),
               }}
@@ -204,7 +205,7 @@ export function DialogWithInput({
         </div>
 
         {/* Response Options */}
-        <div className="border-t border-border bg-muted/30 px-4 py-3 overflow-y-auto">
+        <div className="border-t border-border bg-muted/30 px-4 py-3 overflow-y-auto overflow-x-hidden">
           {/* Response Buttons */}
           <div className="grid grid-cols-1 gap-2">
             {responseOptions.map((option, index) => (
@@ -219,12 +220,11 @@ export function DialogWithInput({
                     : 'secondary'
                 }
                 className={cn(
-                  'justify-start text-left',
+                  'justify-start text-left overflow-x-auto overflow-y-hidden text-xs sm:text-sm',
                   option.type === 'positive' && 'border-l-4 border-l-green-500',
                   option.type === 'negative' && 'border-l-4 border-l-red-500'
                 )}
               >
-                {/* Pass the exact text without any transformation */}
                 {option.text}
               </Button>
             ))}
