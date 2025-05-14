@@ -97,8 +97,8 @@ function ActionsButtons(props: ActionsButtonsProps) {
             className={`flex h-16 w-16 flex-col items-center justify-center gap-1 border-2 ${
               gameState === 'idle' &&
               !hasTalkedThisRound &&
-              gameText.includes('Talk to the Guardian')
-                ? 'border-green-500 animate-pulse'
+              gameText.includes('Click the Talk button')
+                ? 'border-primary animate-pulse '
                 : 'border-primary/30'
             } p-0 md:h-20 md:w-20`}
           >

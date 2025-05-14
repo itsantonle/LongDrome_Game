@@ -149,7 +149,7 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
               startTurn={() => {
                 console.log('start turn')
               }}
-              stats={{ mp: 50 }}
+              // stats={{ mp: 50 }}
               gameState="idle"
               areButtonsDisabled={() => {
                 return false
@@ -176,7 +176,7 @@ export function TutorialTransition({ onComplete }: TutorialTransitionProps) {
             startTurn={() => {
               console.log('start turn')
             }}
-            stats={{ mp: 50 }}
+            // stats={{ mp: 50 }}
             gameState="home"
             areButtonsDisabled={() => {
               return false
