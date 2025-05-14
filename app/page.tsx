@@ -641,25 +641,6 @@ export default function Game() {
     setInputDialogOpen(false)
   }
 
-  // Handle name submission
-  // const handleNameSubmit = (name: string) => {
-  //   setPlayerName(name)
-  //   setShowNameInput(false)
-
-  //   // Show victory dialog
-  //   setGameState('victory')
-  //   setDialogTitle('Victory')
-  //   setDialogContent([
-  //     `Congratulations, ${name}!`,
-  //     'You have proven yourself worthy in the battle of palindromes.',
-  //     'The Ancient Guardian grants you passage and shares its ancient knowledge with you.',
-  //     'Your name shall be recorded in the annals of palindrome masters!',
-  //   ])
-  //   setDialogOpen(true)
-  // }
-
-  // Check home access and either go home or show modal
-
   /**  CHECKHOMECCESS HANDLER BLOCK
    * @see canAccessHome = relies on this function to see if the user can access home
    * @see goHome- is called when the user can go home
@@ -776,44 +757,30 @@ export default function Game() {
     return gameState === 'gameOver' || gameState === 'victory'
   }
 
-  // const inputRef = useRef<HTMLInputElement>(null)
-  // const [userResponse, setUserResponse] = useState('')
-  // const [isTyping, setIsTyping] = useState(false)
-  // const [currentPage, setCurrentPage] = useState(0)
-
-  // const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-  //   if (event.key === 'Enter') {
-  //     handleRespond()
-  //   }
-  // }
-
-  // const handleRespond = () => {
-  //   if (userResponse.trim()) {
-  //     handleDialogResponse(userResponse)
-  //     setUserResponse('')
-  //     if (inputRef.current) {
-  //       inputRef.current.blur()
-  //     }
-  //   }
-  // }
-
-  /* ACTUAL COMPONENT RETURN BLOCK
-    start here 
-   */
-
   return (
     <>
       <div className="container flex min-h-screen flex-col items-center justify-center py-10">
         <div className="mb-16"></div>
 
-        {/* TUTORIAL DIALOG */}
+        {/**TUTORIAL DIALOG
+         * if the state is in tutorial and the tutorial isn't complete
+         * then this renders as the first instance when opening the webpage
+         * @see gamestate
+         * @see tutorialComplete
+         * @see handleTutorialComplete
+         * */}
         {gameState === 'tutorial' && !tutorialComplete && (
           <TutorialTransition onComplete={handleTutorialComplete} />
         )}
 
-        {/* GO HOME OPTION */}
+        {/**HOME ACCESS MODAL -
+         * relies on the amiability if displayed or notm relies on boolean state value
+         * will only ever render if the amiability level does not reach friendlly threshold
+         * @see GAME_CONFIG.AMIABILITY_THRESHOLDS
+         * @see homeAccessModal - relies on this state to render on screen
+         *  */}
 
-        {homeAccessModal && (
+        {
           <>
             <HomeAccessModal
               gameState={gameState}
@@ -823,22 +790,30 @@ export default function Game() {
               npcName={npcName}
             />
           </>
-        )}
+        }
 
-        {/* // remove this && because the thing itself has conditional rendering */}
-        {readingBook && (
+        {/** READING BOOK MODAL
+         * displays the manacher modal when at home and renders the ReadingbookModal on screen
+         * @see readingBook  -relies on this state to render on screen*/}
+        {
           <ReadingBookModal
             isOpen={readingBook}
             onClose={() => setReadingBook(false)}
           />
-        )}
+        }
 
         <div className="w-full max-w-4xl">
           {/* Game Container */}
           <div className="grid grid-cols-1 gap-4 md:grid-cols-[1fr_auto]">
             {/* Main Game Area */}
             <div className="flex flex-col">
-              {/* Home/Temple buttons */}
+              {/** Home/Temple buttons component
+               * a component that renders the locations
+               * @see gameState - relies on game state for button behavior
+               * @see checkHomeAccess - relies on this function to check if home access is available to the user (if not the homeaccessmodal is shown)
+               * @see returnToTemple - relies on this function when user navigates to temple
+               * @see canGoHome - state that manages after the user is allowed to go home (for in between turns)
+               */}
               <HomeTempleButtons
                 gameState={gameState}
                 checkHomeAccess={checkHomeAccess}
@@ -849,29 +824,48 @@ export default function Game() {
               />
               {/* Game Screen */}
               <Card className="relative overflow-hidden border-2 border-primary/30 p-0">
-                {/* Enemy stats bar */}
-                {gameState !== 'home' && (
+                {/**
+                 *  Enemy stats bar
+                 * @see gameState - depends on this to render or not (does not render at home)
+                 * @see enemyStats - the enemy stats that is reflected in the component UI
+                 * @see amiabilityChangeIndicator- this adds either a green(amiability increase) or a red indicator(amiability decrease) on the amiability bar
+                 * @see npcName - this is the state that manages the npc name
+                 * */}
+                {
                   <EnemyStatusBar
                     gameState={gameState}
                     enemyStats={enemyStats}
-                    amiabilityChangeIndicator={amiabilityChangeIndicator} // Changes dynamically
+                    amiabilityChangeIndicator={amiabilityChangeIndicator} // Changes dynamically - this is an integer
                     npcName={npcName} // Displayed as the enemy’s name
                   />
-                )}
+                }
                 {/* Game Screen Background */}
                 <div className="relative h-[360px] w-full overflow-hidden bg-black">
                   <GameBackground gameState={gameState} />
 
                   {gameState !== 'home' && (
                     <>
-                      {/* Enemy */}
+                      {/**  Enemy Image
+                       * Changes depends on the enemy amiability
+                       * @see enemyStats.amiability
+                       */}
                       <EnemyImage amiability={enemyStats.amiability} />
 
-                      {/* Color Sequence Area - Positioned at the bottom of the screen */}
+                      {/**  Color Sequence Area - Positioned at the bottom of the screen */}
                       <div className="absolute bottom-20 left-1/2 -translate-x-1/2 w-full max-w-md">
                         {currentColorSequence.length > 0 && (
                           <div className="space-y-4">
-                            {/* Current Color Sequence */}
+                            {/**  Current Color Sequence - will only render if sequence is greater than zero
+                             * @see currentColorSequence - the current color sequence of type string[]. Contains the colorrs that will be renderd
+                             * ['blue', 'yellow', 'blue']
+                             * @see selectedIncdices contains the number[] of the indices selected like example selecting yellow would yield
+                             * [1]
+                             * @see showOptimalPalindrome - boolean whether to show optiomal or not (via magic or eneey turn)
+                             * @see COLORS = the list of object that containes the value mapped to a color example:
+                             *  { name: "black", value: "#000000" }, where black correposinde to the hex value
+                             * @see toggleBlockSelection - handles the block selection
+                             *
+                             */}
                             <ColorSequence
                               currentColorSequence={currentColorSequence}
                               selectedIndices={selectedIndices}
@@ -883,7 +877,16 @@ export default function Game() {
                               }
                             />
 
-                            {/* Selected Sequence */}
+                            {/** Selected Sequence will only render if sequence is greater than zero
+                             * @see selectedIncdices contains the number[] of the indices selected like example selecting yellow would yield
+                             * [1]
+                             *  @see currentColorSequence - the current color sequence of type string[]. Contains the colorrs that will be renderd
+                             * ['blue', 'yellow', 'blue']
+                             *  @see COLORS = the list of object that containes the value mapped to a color example:
+                             *  { name: "black", value: "#000000" }, where black correposinde to the hex value
+                             *  @see isPalindrome -checks if COLORS[] is a palindrome, a palidrome i [blue, yellow, blue]
+                             *  @see getSelectedColors - retruns a list of COLOR[] based on the indices
+                             * */}
                             {selectedIndices.length > 0 && (
                               <SelectedSequence
                                 selectedIndices={selectedIndices}
@@ -894,7 +897,16 @@ export default function Game() {
                               />
                             )}
 
-                            {/* Submit Button */}
+                            {/**  Submit Button
+                             * checks for gameState and selectedindices and has submitted this turn to render
+                             * @see gameState
+                             * @see selectedIncdices
+                             * @see hasSubmittedThisTurn (boolean)
+                             *
+                             * Relies on other booliean variables for disabled state
+                             * @see isSelectionContinuous - false if blocks selected are no adjacent
+                             * @see isPalindrome(getSelectedColors()) checks the COLOr[] string if palindrome returns false if now
+                             */}
                             {(gameState === 'userTurn' || finalBattle) &&
                               selectedIndices.length > 0 &&
                               !hasSubmittedThisTurn && (
@@ -917,11 +929,17 @@ export default function Game() {
                     </>
                   )}
 
-                  {/* Character */}
+                  {/**  Character Image
+                   * @see stats.hp - changes based on hp you must also profied the config maxhp to have a relative bases
+                   * @see stats.maxHp
+                   */}
                   <CharacterImage hp={stats.hp} maxHp={stats.maxHp} />
                 </div>
 
-                {/* Game Text Box */}
+                {/**  Game Text Box
+                 * contains the gameText
+                 * @see gameText
+                 */}
                 <div className="border-t-2 border-primary/30 bg-muted/80 p-4">
                   <p className="font-mono text-sm leading-relaxed">
                     {gameText}
@@ -931,10 +949,16 @@ export default function Game() {
 
               {/* Game Controls */}
               <Card className="mt-4 border-2 border-primary/30 bg-transparent p-4">
-                {/* Game Status */}
+                {/**  Game Status - string that let you know the game state
+                 * @see gameState - relies on this to display dynamic text (either restart the game or start turn)
+                 * @see startTurn - the funcion that is invoked when starting turn
+                 */}
                 <GameStatus gameState={gameState} startTurn={startTurn} />
 
-                {/* Health and MP BAR */}
+                {/** Health and MP BAR
+                 * like the enemey health bar relies on the stats to display infor
+                 * @see stats
+                 */}
 
                 <PlayerHPMP
                   hp={stats.hp}
@@ -943,10 +967,13 @@ export default function Game() {
                   maxMp={stats.maxMp}
                 />
 
-                {/* Game alert for the status  */}
+                {/* Game alert for the status - an alert that pops up to add additional inforation in between game states  */}
                 <GameAlert gameState={gameState} />
 
-                {/* Show color selection status when in user turn */}
+                {/** Show color selection status when in user turn
+                 * works exactly like the selectedSEquence component, just that it displays somewhere else and has a different styling
+                 * @see SelectedSequnce (Compoinent)
+                 */}
                 <ExternalSelectedSequence
                   gameState={gameState}
                   finalBattle={finalBattle}
@@ -959,7 +986,19 @@ export default function Game() {
               </Card>
             </div>
 
-            {/* Action Buttons */}
+            {/** Action Buttons
+             * the action buttons serve as the user's main way to interact with the game element
+             * @see handleRest - for the rest button clicked
+             * @see handleRead = for the read button clicked
+             * @see handleTalk - for the talk button clicked
+             * @see handleMagic -for the magic button clicked
+             * @see startTurn = for fight button clicked
+             * @see hasRestedThisTurn - checks if rest button can be clicked
+             * @see hasTalkedThisRound - chekcs if talk button can be clicked
+             * @see areButtonsDisabled - checks if any buttons can be clicked
+             * @see gameText - checks if it prompts the user to talk
+             *
+             */}
             <ActionsButtons
               gameState={gameState}
               handleRest={handleRest}
@@ -971,12 +1010,17 @@ export default function Game() {
               hasTalkedThisRound={hasTalkedThisRound}
               areButtonsDisabled={areButtonsDisabled}
               gameText={gameText}
-              stats={stats}
+              // stats={stats} removed this feature
             />
           </div>
         </div>
 
-        {/* MODAL THAT POPS UP WHEN GO HOME IS TRUE and during the final challenge */}
+        {/**  MODAL THAT POPS UP WHEN GO HOME IS TRUE and during the final challenge and when talking to self
+         * @see dialogOpen - boolean if the dialog is modal is open or not
+         * @see dialogTitle - the tilte of the dialog above (may be name)
+         * @see dialogContent - the state that manages the dialog content
+         * @see portrait - dynamically changes based on gameState
+         */}
         <GameDialog
           isOpen={dialogOpen}
           onClose={() => {

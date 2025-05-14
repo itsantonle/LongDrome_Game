@@ -15,7 +15,7 @@ interface ActionsButtonsProps {
   hasTalkedThisRound: boolean
   areButtonsDisabled: () => boolean
   gameText: string
-  stats: { mp: number }
+  // stats: { mp: number }
 }
 
 function ActionsButtons(props: ActionsButtonsProps) {
@@ -30,7 +30,7 @@ function ActionsButtons(props: ActionsButtonsProps) {
     hasTalkedThisRound,
     areButtonsDisabled,
     gameText,
-    stats,
+    // stats,
   } = props
 
   return (
