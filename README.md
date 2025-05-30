@@ -24,20 +24,26 @@ This project runs on NextJS and is a browser based game that relies on ShadCN an
 - [❤️‍🩹 Amiability Bar](#%EF%B8%8Famiabliity-bar)
 - [🖱️ Interactive Action Buttons](#%EF%B8%8Fintearctive-action-buttons)
 - [📱 Responsive Design](#responsive-design)
-- [🌗 Light/Dark Mode](#lightdark-mode)
+- [🌗 Light/Dark Mode](#%EF%B8%8Flight--dark-mode-with-nextthemes)
 
-## 📖 Game Mechanics
-- [💡 Utilizing Manacher's Algorithm](#utilizing-manachers-algorithm)
-  - [1️⃣ Handling Edge Cases](#handling-edge-cases)
-  - [2️⃣ Transforming the Input Array](#transforming-the-input-array)
-  - [3️⃣ Initializing Helper Arrays and Variables](#initializing-helper-arrays-and-variables)
-  - [4️⃣ Manacher’s Algorithm Execution](#manachers-algorithm-execution)
-  - [5️⃣ Finding the Longest Palindrome](#finding-the-longest-palindrome)
-  - [6️⃣ Converting Back to Original Indices](#converting-back-to-original-indices)
+## 📖 Algorithm Design
+- [💡 Utilizing Manacher's Algorithm](#utilization-of-manachers-algorithm)
+  - [1️⃣ Handling Edge Cases](#1handling-edge-cases)
+  - [2️⃣ Transforming the Input Array](#2-transforming-the-input-array)
+  - [3️⃣ Initializing Helper Arrays and Variables](#3-initializing-helper-arrays-and-variables)
+  - [4️⃣ Manacher’s Algorithm Execution](#4-using-manachers-algorithm-to-find-palindromes)
+  - [5️⃣ Finding the Longest Palindrome](#5-finding-the-longest-palindrome)
+  - [6️⃣ Converting Back to Original Indices](#6-converting-back-to-original-indices)
+    
+- [💡 Generating a Random Palindromic Sequence](#generate-random-sequence)
+  - [1️⃣ Turn Count Mechanic](#1-turn-count-mechanic)
+  - [2️⃣ Setting Sequence Length Boundaries](#2-setting-sequence-length-boundaries)
+  - [3️⃣ Generating a Random Sequence](#3-generating-a-random-sequence)
+  - [4️⃣ Creating Hidden Palindrome](#4-creating-hidden-palindrome)
+
 
 ## 🎮 Playing the Game
-- [How to Play](#how-to-play)
-- [Deployment](#deployment)
+- [How to Play](#-playing-the-game-1)
 
 ## 🤝 Contribution
 - [How to Contribute](#how-to-contribute)
@@ -183,7 +189,7 @@ Expand again (left=2, right=8) → "null" == "null"
 
 ```
 
-5. Finding the Longest Palindrome
+### 5. Finding the Longest Palindrome
 Loop through P[i] to find the maximum palindrome length and its center.
 After iterating through all indices, we find that:
 
@@ -193,7 +199,7 @@ Center index: 6
 
 
 
-7. Converting Back to Original Indices
+### 6. Converting Back to Original Indices
 The actual start index in the original array is computed as: Math.floor((centerIndex - maxLen) / 2)
 
 This accounts for the extra null elements.
@@ -204,11 +210,100 @@ Math.floor((centerIndex - maxLen) / 2)
 ```
 the function returns the starting index and the length of the longest palindrome In 'palidrome-utils' 
 ["blue", "green", "blue"]
+<br/>
+<hr/>
 
-# Contribution
+## 💡Generate Random Sequence
+```txt
+this section covers the explaination for the following:
+1.genearateNewSequence() (page.tsx) generates new sequence and updates the color sequence state
+2.generateRandomSequence (palindrome_utils.ts) the function that is called by generateNewSequence
+```
+### 1. Turn Count Mechanic
+the difficulty of the generated sequence depends on how far the user is in. _The higher the turn count the harder_
+the current set up sets this dynamically. 
+```ts
+const newSequence = generateRandomSequence(5, 12, turnCount)
+
+// code that implements this
+  const difficultyFactor = Math.min(5, Math.floor(turnCount / 3))
+
+// this code adds more noise but does SHOULD NOT DISRUPT THE START OR THE END to preserve integrity
+  if (difficultyFactor > 2) {
+    // Add some similar colors to confuse the player
+    for (let i = 0; i < difficultyFactor; i++) {
+      const randomIndex = Math.floor(Math.random() * length)
+      if (
+        randomIndex !== palindromeStart &&
+        randomIndex !== palindromeStart + palindromeLength - 1
+      ) {
+        colors[randomIndex] = colors[Math.floor(Math.random() * length)]
+      }
+    }
+  }
+```
+
+### 2. Setting Sequence Length Boundaries
+identifies the min/ max length of palindrome COLOR[] sequence
+
+The sequence length starts at minLength but grows with difficulty.A safeguard ensures a minimum of 5 elements.
+maxLength is adjusted to allow larger sequences as difficulty rises.
+```ts
+const min = Math.max(5, minLength + difficultyFactor);
+const max = Math.max(min, maxLength + difficultyFactor);
+
+```
+
+### 3. Generating a Random Sequence
+```ts
+const length = Math.floor(Math.random() * (max - min + 1)) + min;
+const colors: string[] = [];
+```
+The actual sequence length is randomly chosen within the min to max range. An empty array colors is initialized to hold the sequence.
+
+```ts
+for (let i = 0; i < length; i++) {
+    colors.push(COLORS[Math.floor(Math.random() * COLORS.length)].name);
+}
+```
+A loop fills colors with random names from a predefined COLORS array.
+
+```ts
+/// this can be modified at anytime
+// Define available colors
+export const COLORS = [
+  { name: 'black', value: '#000000' },
+  { name: 'red', value: '#FF0000' },
+  { name: 'blue', value: '#0000FF' },
+  { name: 'green', value: '#00FF00' },
+  { name: 'yellow', value: '#FFFF00' },
+  { name: 'purple', value: '#800080' },
+  { name: 'orange', value: '#FFA500' },
+  { name: 'white', value: '#FFFFFF' },
+]
+
+```
+
+### 4. Creating Hidden Palindrome 
+The function ensures the sequence includes at least one palindrome.
+The palindrome’s length is dynamically calculated to be between 5 and 7 characters.
+A random starting position for the palindrome is selected. These values can be chosen to be dynamic later on.
+```ts
+const palindromeLength = Math.min(7, Math.max(5, Math.floor(length / 2)));
+const palindromeStart = Math.floor(Math.random() * (length - palindromeLength));
+```
+
+
+
+
+# 🎮 Playing the Game
+![image](https://github.com/user-attachments/assets/4a7b908f-b76e-4866-b8f1-a6a9c2a89e2c)
+
+
+# 🤝 Contribution
 
 Contributions to the LongDrome Game is welcome! It's small scale for now but can be more complex! Fork this repository and submit a PR to contribute
 
-# License
+# 📜 License
 
 This Project is licensed under the <a href="LICENSE"> MIT LICENSE </a>
