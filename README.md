@@ -18,11 +18,11 @@ This project runs on NextJS and is a browser based game that relies on ShadCN an
 <hr/>
 
 #    📔Table of Contents
-## 🕹️ Features
+## [🕹️ Features](#%EF%B8%8Ffeatures)
 - [🎲 Palindrome Color Selection](#palindrome-color-selection)
-- [🖼️ Different Locations](#different-locations)
-- [❤️‍🩹 Amiability Bar](#amiability-bar)
-- [🖱️ Interactive Action Buttons](#interactive-action-buttons)
+- [🖼️ Different Locations](#%EF%B8%8Fdifferent-locations)
+- [❤️‍🩹 Amiability Bar](#%EF%B8%8Famiabliity-bar)
+- [🖱️ Interactive Action Buttons](#%EF%B8%8Fintearctive-action-buttons)
 - [📱 Responsive Design](#responsive-design)
 - [🌗 Light/Dark Mode](#lightdark-mode)
 
@@ -73,15 +73,15 @@ Use the buttons to navigate and continue with the game! Talk, fight and use Magi
 
 ![image](https://github.com/user-attachments/assets/e73af4c1-329f-4a66-99ea-b2f1b30a6e75)
 
-## Responsive Design
+## 🧑‍🎨Responsive Design
 Playing on Mobile or on Laptop screens? No problem. 
 
 ![longdrome responseive](https://github.com/user-attachments/assets/8f16ab77-b8b8-4fda-a5f6-73e13d0f673b)
 
-## Light / Dark Mode with Next/Themes
+## ☀️Light / Dark Mode with Next/Themes
 Play in Dark or Light Mode
 
-## Utilization of Manacher's Algorithm
+## 💡Utilization of Manacher's Algorithm
 The Game Mechanics use the famous Manacher Algorithm that finds the longest palindromic strings in linear O(n) time!
 ### 1.Handling Edge Cases
 If the array is empty, return { start: 0, length: 0 }.
@@ -125,6 +125,8 @@ P = [0, 1, 0, 2, 0, 1, 0]
 ```
 **center**: The center of the current longest palindrome.
 
+**right**: The right boundary of the palindrome that extends the farthest.
+
 **Example**
 
 ```ts
@@ -140,7 +142,6 @@ P[3] = 2 (radius = 2)
 
 ```
 
-**right**: The right boundary of the palindrome that extends the farthest.
 
 ```ts
 P = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]  // All radii start at 0
@@ -149,6 +150,13 @@ right = 0
 ```
 
 ### 4. Using Manacher’s Algorithm to Find Palindromes
+```txt
+this sections handles the process behind the functions
+1. setOptimal palindrome gets from determineOptimalPalindrome(client_helper_utils) - calls from main page, validates palindrome
+2. findOptimalPalindrome(game_utils) - error handling and returns sequence to determineOptimalPalindrome, validates manacher, otherwise brute force
+3. findLongestPalindromeManachger(palindrome_utils) - base case (probably will never fail)
+4. findLongestPalindromeBruteForce(palindrome_utils) - (CAUTIONARY FALLBACK)
+```
 For each position i, check if it’s within the current palindrome (right > i).
 
 If it is, use the mirror value (P[mirror]) to avoid redundant computations.
@@ -159,17 +167,42 @@ Updating center and right:
 
 If we find a palindrome that extends beyond right, update center and right.
 
+**Example Expansion Process**
+we compare if the left and the right side are symmetrical
+thus we have these properties: 
+center: 5 radius is 3
+let's say we reach green (5)
+Expand outward (left=4, right=6) → "null" == "null" 
+
+Expand again (left=3, right=7) → "blue" == "blue" 
+
+Expand again (left=2, right=8) → "null" == "null"
+```ts
+(null) red (null) blue (null) |[green]| (null) blue (null) red (null)
+
+```
+
 5. Finding the Longest Palindrome
 Loop through P[i] to find the maximum palindrome length and its center.
+After iterating through all indices, we find that:
 
-6. Converting Back to Original Indices
+Max palindrome radius: P[6] = 3
+
+Center index: 6
+
+
+
+7. Converting Back to Original Indices
 The actual start index in the original array is computed as: Math.floor((centerIndex - maxLen) / 2)
 
 This accounts for the extra null elements.
 
-# Playing the Game
-
-### Deployed on <SET DEPLOYMENT HERE >
+To convert this back to original indices:
+```ts
+Math.floor((centerIndex - maxLen) / 2)
+```
+the function returns the starting index and the length of the longest palindrome In 'palidrome-utils' 
+["blue", "green", "blue"]
 
 # Contribution
 
