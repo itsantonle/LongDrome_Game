@@ -83,6 +83,13 @@ Play in Dark or Light Mode
 
 ## 💡Utilization of Manacher's Algorithm
 The Game Mechanics use the famous Manacher Algorithm that finds the longest palindromic strings in linear O(n) time!
+```txt
+this sections handles the process behind the functions
+1. setOptimal palindrome gets from determineOptimalPalindrome(client_helper_utils) - calls from main page, validates palindrome
+2. findOptimalPalindrome(game_utils) - error handling and returns sequence to determineOptimalPalindrome, validates manacher, otherwise brute force
+3. findLongestPalindromeManachger(palindrome_utils) - base case (probably will never fail)
+4. findLongestPalindromeBruteForce(palindrome_utils) - (CAUTIONARY FALLBACK)
+```
 ### 1.Handling Edge Cases
 If the array is empty, return { start: 0, length: 0 }.
 
@@ -150,13 +157,7 @@ right = 0
 ```
 
 ### 4. Using Manacher’s Algorithm to Find Palindromes
-```txt
-this sections handles the process behind the functions
-1. setOptimal palindrome gets from determineOptimalPalindrome(client_helper_utils) - calls from main page, validates palindrome
-2. findOptimalPalindrome(game_utils) - error handling and returns sequence to determineOptimalPalindrome, validates manacher, otherwise brute force
-3. findLongestPalindromeManachger(palindrome_utils) - base case (probably will never fail)
-4. findLongestPalindromeBruteForce(palindrome_utils) - (CAUTIONARY FALLBACK)
-```
+
 For each position i, check if it’s within the current palindrome (right > i).
 
 If it is, use the mirror value (P[mirror]) to avoid redundant computations.
