@@ -43,7 +43,7 @@ export function MainHeader() {
             </a>
           )}
           <a
-            href="https://github.com/yourusername/palindrome-guardian"
+            href="https://github.com/itsantonle/LongDrome_Game"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
