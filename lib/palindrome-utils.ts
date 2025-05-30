@@ -1,7 +1,5 @@
-// Add detailed comments at the top of the file explaining how to use and modify the palindrome utilities
-
 /**
- * Palindrome Utilities for Palindrome Guardian
+ * Palindrome Utilities for LONGEDROME
  * --------------------------------------------
  *
  * This file contains utility functions for palindrome operations in the game.
@@ -53,14 +51,14 @@
 
 // Define available colors
 export const COLORS = [
-  { name: "black", value: "#000000" },
-  { name: "red", value: "#FF0000" },
-  { name: "blue", value: "#0000FF" },
-  { name: "green", value: "#00FF00" },
-  { name: "yellow", value: "#FFFF00" },
-  { name: "purple", value: "#800080" },
-  { name: "orange", value: "#FFA500" },
-  { name: "white", value: "#FFFFFF" },
+  { name: 'black', value: '#000000' },
+  { name: 'red', value: '#FF0000' },
+  { name: 'blue', value: '#0000FF' },
+  { name: 'green', value: '#00FF00' },
+  { name: 'yellow', value: '#FFFF00' },
+  { name: 'purple', value: '#800080' },
+  { name: 'orange', value: '#FFA500' },
+  { name: 'white', value: '#FFFFFF' },
 ]
 
 /**
@@ -83,7 +81,10 @@ export const COLORS = [
  * @param colors Array of color strings
  * @returns Object containing the start index and length of the longest palindrome
  */
-export function findLongestPalindromeManacher(colors: string[]): { start: number; length: number } {
+export function findLongestPalindromeManacher(colors: string[]): {
+  start: number
+  length: number
+} {
   const n = colors.length
   if (n === 0) return { start: 0, length: 0 }
   if (n === 1) return { start: 0, length: 1 }
@@ -180,7 +181,10 @@ export function findLongestPalindromeManacher(colors: string[]): { start: number
  * @param colors Array of color strings
  * @returns Object containing the start index and length of the longest palindrome
  */
-export function findLongestPalindromeBruteForce(colors: string[]): { start: number; length: number } {
+export function findLongestPalindromeBruteForce(colors: string[]): {
+  start: number
+  length: number
+} {
   const n = colors.length
   if (n === 0) return { start: 0, length: 0 }
   if (n === 1) return { start: 0, length: 1 }
@@ -238,7 +242,11 @@ export function isPalindrome(colors: string[]): boolean {
  * @param turnCount Current turn count (affects difficulty)
  * @returns Array of color strings
  */
-export function generateRandomSequence(minLength: number, maxLength: number, turnCount: number): string[] {
+export function generateRandomSequence(
+  minLength: number,
+  maxLength: number,
+  turnCount: number
+): string[] {
   // Increase difficulty with turn count
   const difficultyFactor = Math.min(5, Math.floor(turnCount / 3))
   const min = Math.max(5, minLength + difficultyFactor)
@@ -256,7 +264,9 @@ export function generateRandomSequence(minLength: number, maxLength: number, tur
   // Ensure there's at least one palindrome of length 5 or more
   // As difficulty increases, make the palindrome harder to spot
   const palindromeLength = Math.min(7, Math.max(5, Math.floor(length / 2)))
-  const palindromeStart = Math.floor(Math.random() * (length - palindromeLength))
+  const palindromeStart = Math.floor(
+    Math.random() * (length - palindromeLength)
+  )
 
   // Create a palindrome within the sequence
   for (let i = 0; i < Math.floor(palindromeLength / 2); i++) {
@@ -270,7 +280,10 @@ export function generateRandomSequence(minLength: number, maxLength: number, tur
     // Add some similar colors to confuse the player
     for (let i = 0; i < difficultyFactor; i++) {
       const randomIndex = Math.floor(Math.random() * length)
-      if (randomIndex !== palindromeStart && randomIndex !== palindromeStart + palindromeLength - 1) {
+      if (
+        randomIndex !== palindromeStart &&
+        randomIndex !== palindromeStart + palindromeLength - 1
+      ) {
         colors[randomIndex] = colors[Math.floor(Math.random() * length)]
       }
     }
@@ -278,4 +291,3 @@ export function generateRandomSequence(minLength: number, maxLength: number, tur
 
   return colors
 }
-
