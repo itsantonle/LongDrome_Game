@@ -12,6 +12,8 @@ This project runs on NextJS and is a browser based game that relies on ShadCN an
 **May 2025 -**
 [untested_release_v.1.0](https://github.com/itsantonle/LongDrome_Game/releases/tag/untested-release-1.0)
 
+**May 2025 (latest)** [untested_release_v1.0.1](https://github.com/itsantonle/LongDrome_Game/releases/tag/untested_release_1.0.1)
+
 ###    🖥 Live Deployments: 
 [Vercel - https://long-drome-game.vercel.app/](https://long-drome-game.vercel.app/)
 
