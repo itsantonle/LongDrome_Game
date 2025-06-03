@@ -19,6 +19,25 @@ This project runs on NextJS and is a browser based game that relies on ShadCN an
 
 <hr/>
 
+### Running the development build
+
+✅ Clone this repository
+``bash
+git clone https://github.com/itsantonle/LongDrome_Game.git
+``
+
+✅ Install dependencies
+``bash
+npm install
+``
+
+✅ Run the developement 
+``bash
+npm run dev
+``
+
+
+
 #    📔Table of Contents
 ## [🕹️ Features](#%EF%B8%8Ffeatures)
 - [🎲 Palindrome Color Selection](#palindrome-color-selection)
