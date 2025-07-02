@@ -1,6 +1,13 @@
 
 
 # 📱About LongDrome
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white)
+![shadcn/ui](https://img.shields.io/badge/shadcn%2Fui-111827?style=for-the-badge&logo=radixui&logoColor=white)
+![Framer Motion](https://img.shields.io/badge/Framer_Motion-EF4CFF?style=for-the-badge&logo=framer&logoColor=white)
+
+
  Version 1.0 - Final Project For Algorithms - SE2231 - Developed by A. Legayada
 ### Face Upon an Enemy that Cannot Be Killed! You can only Defend yourself and Negotiate!
 
